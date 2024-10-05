@@ -538,7 +538,7 @@ public:
 
 	void SetTargetThreadId( unsigned id ) { m_TargetThreadId = id; }
 	unsigned GetTargetThreadId() { return m_TargetThreadId; }
-	bool InTargetThread() { return ( m_TargetThreadId == ThreadGetCurrentId() ); }
+	bool InTargetThread() { return ( m_TargetThreadId == (uint)ThreadGetCurrentId() ); }
 
 #ifdef VPROF_VXCONSOLE_EXISTS
 	enum VXConsoleReportMode_t

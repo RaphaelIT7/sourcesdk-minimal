@@ -19,6 +19,7 @@
 	#include "basehandle.h"
 #endif
 
+extern IMemAlloc *g_pMemAlloc; // Stupid shit WORK!
 
 #pragma warning( disable : 4284 ) // warning C4284: return type for 'CNetworkVarT<int>::operator ->' is 'int *' (ie; not a UDT or reference to a UDT.  Will produce errors if applied using infix notation)
 

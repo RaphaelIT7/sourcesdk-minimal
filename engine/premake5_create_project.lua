@@ -20,11 +20,10 @@ group("SourceSDK")
 		})
 		vpaths({["Source files/*"] = "*.cpp"})
 
-		IncludeSDKCommonInternal()
-
 		filter("system:windows")
 			disablewarnings("4324")
 			defines({"_DLL_EXT=.dll", "WIN32"})
+			libdirs("../lib/public")
 
 			filter({"system:windows", "configurations:Debug"})
 				linkoptions("/NODEFAULTLIB:\"libcmt\"")
@@ -93,3 +92,4 @@ group("SourceSDK")
 			})
 			defines({"_DLL_EXT=.dylib", "COMPILER_GCC", "POSIX", "_POSIX", "OSX", "GNUC", "NO_MALLOC_OVERRIDE"})
 			files("processor_detect_linux.cpp")
+			libdirs("../lib/public/osx32")

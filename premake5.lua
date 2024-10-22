@@ -46,9 +46,6 @@ function IncludeSDKCommonInternal()
 			"SWDS"
 		})
 
-		filter({"system:linux", "architecture:x86"})
-			libdirs(path.getabsolute(current_dir) .. "/lib/public/linux32")
-
 		filter({"system:linux", "architecture:x86_64"})
 			defines("PLATFORM_64BITS")
 			libdirs(path.getabsolute(current_dir) .. "/lib/public/linux64")

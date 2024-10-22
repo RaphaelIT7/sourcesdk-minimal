@@ -31,9 +31,6 @@ group("SourceSDK")
 		filter({"architecture:x86_64", "system:linux"})
 			libdirs("../lib/public/linux64")
 
-		filter({"architecture:x86", "system:linux"})
-			libdirs("../lib/public/linux32")
-
 		filter("system:linux")
 			disablewarnings({
 				"unused-local-typedefs",

@@ -349,6 +349,12 @@
 	#define IsPlatformWindowsPC32()	0
 	#define IsPlatformPosix()		1
 	#define PLATFORM_POSIX 1
+	
+	#if defined( DX_TO_GL_ABSTRACTION )
+		#define IsPlatformOpenGL() true
+	#else
+		#define IsPlatformOpenGL() false
+	#endif
 
 	#if defined( LINUX ) && !defined( OSX ) // for havok we define both symbols, so don't let the osx build wander down here
 		#define IsPlatformLinux() 1

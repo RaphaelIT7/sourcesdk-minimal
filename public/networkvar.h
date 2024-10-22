@@ -19,8 +19,6 @@
 	#include "basehandle.h"
 #endif
 
-extern IMemAlloc *g_pMemAlloc; // Stupid shit WORK!
-
 #pragma warning( disable : 4284 ) // warning C4284: return type for 'CNetworkVarT<int>::operator ->' is 'int *' (ie; not a UDT or reference to a UDT.  Will produce errors if applied using infix notation)
 
 #define MyOffsetOf( type, var ) ( (int)(intp)&((type*)0)->var )
@@ -55,6 +53,7 @@ extern IMemAlloc *g_pMemAlloc; // Stupid shit WORK!
 // network vars use memcmp when fields are set.  To ensure proper behavior your
 // object's memory should be initialized to zero.  This happens for entities automatically
 // use this for other classes.
+#if 0 // It's unused and only breaks shit? Why.
 class CMemZeroOnNew
 {
 public:
@@ -88,7 +87,7 @@ public:
 		}
 	}
 };
-
+#endif
 
 inline int InternalCheckDeclareClass( const char *pClassName, const char *pClassNameMatch, void *pTestPtr, void *pBasePtr )
 {

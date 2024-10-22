@@ -153,6 +153,8 @@
 #define VPROF_BUDGETGROUP_JOBS_COROUTINES			_T("Jobs/Coroutines")
 #define VPROF_BUDGETGROUP_SLEEPING					_T("Sleeping")
 #define VPROF_BUDGETGROUP_THREADINGMAIN				_T("ThreadingMain")
+#define VPROF_BUDGETGROUP_ENCRYPTION				_T("Encryption")
+
 
 // GS - Bunch of defines for ChromeHtml
 #define VPROF_BUDGETGROUP_CHROMEHTML				_T("Chromehtml")
@@ -539,7 +541,7 @@ public:
 
 	void SetTargetThreadId( unsigned id ) { m_TargetThreadId = id; }
 	unsigned GetTargetThreadId() { return m_TargetThreadId; }
-	bool InTargetThread() { return ( m_TargetThreadId == ThreadGetCurrentId() ); }
+	bool InTargetThread() { return ( m_TargetThreadId == (uint)ThreadGetCurrentId() ); }
 
 #ifdef VPROF_VXCONSOLE_EXISTS
 	enum VXConsoleReportMode_t

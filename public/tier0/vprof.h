@@ -536,9 +536,9 @@ public:
 	void Start();
 	void Stop();
 
-	void SetTargetThreadId( unsigned id ) { m_TargetThreadId = id; }
+	void SetTargetThreadId( ThreadId_t id ) { m_TargetThreadId = id; }
 	unsigned GetTargetThreadId() { return m_TargetThreadId; }
-	bool InTargetThread() { return ( m_TargetThreadId == (uint)ThreadGetCurrentId() ); }
+	bool InTargetThread() { return ( m_TargetThreadId == ThreadGetCurrentId() ); }
 
 #ifdef VPROF_VXCONSOLE_EXISTS
 	enum VXConsoleReportMode_t
@@ -665,7 +665,7 @@ public:
 	void HideBudgetGroup( int budgetGroupID, bool bHide = true );
 	void HideBudgetGroup( const tchar *pszName, bool bHide = true ) { HideBudgetGroup( BudgetGroupNameToBudgetGroupID( pszName), bHide ); }
 
-	int64 *FindOrCreateCounter( const tchar *pName, CounterGroup_t eCounterGroup=COUNTER_GROUP_DEFAULT  );
+	int *FindOrCreateCounter( const tchar *pName, CounterGroup_t eCounterGroup=COUNTER_GROUP_DEFAULT  );
 	void ResetCounters( CounterGroup_t eCounterGroup );
 	
 	int GetNumCounters( void ) const;
@@ -763,7 +763,7 @@ protected:
 	CPUTraceState			m_iCPUTraceEnabled;
 #endif
 
-	unsigned m_TargetThreadId;
+	ThreadId_t m_TargetThreadId;
 };
 
 //-------------------------------------
@@ -1423,7 +1423,7 @@ public:
 		*m_pCounter = val; 
 	}
 private:
-	int64 *m_pCounter;
+	int *m_pCounter;
 };
 
 #endif

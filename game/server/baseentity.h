@@ -15,7 +15,6 @@
 
 #include "entitylist.h"
 #include "entityoutput.h"
-#include "networkvar.h"
 #include "collisionproperty.h"
 #include "ServerNetworkProperty.h"
 #include "shareddefs.h"
@@ -32,6 +31,8 @@ class IEntitySaveUtils;
 class CRecipientFilter;
 class CStudioHdr;
 class ILuaObject;
+class IGMODDataTable;
+class ILuaInterface;
 
 // Matching the high level concept is significantly better than other criteria
 // FIXME:  Could do this in the script file by making it required and bumping up weighting there instead...
@@ -85,6 +86,7 @@ class CSkyCamera;
 class CEntityMapData;
 class INextBot;
 class IHasAttributes;
+class CBaseAnimatingOverlay;
 
 typedef CUtlVector< CBaseEntity* > EntityList_t;
 
@@ -877,6 +879,7 @@ public:
 
 	// Returns a CBaseAnimating if the entity is derived from CBaseAnimating.
 	virtual CBaseAnimating*	GetBaseAnimating() { return 0; }
+	virtual CBaseAnimatingOverlay* GetBaseAnimatingOverlay() { return 0; }
 
 	virtual IResponseSystem *GetResponseSystem();
 	virtual void	DispatchResponse( const char *conceptName );
@@ -986,7 +989,8 @@ public:
 	virtual CBaseEntity		*GetEnemy( void ) const { return NULL; }
 
 
-	void	ViewPunch( const QAngle &angleOffset );
+	virtual void	ViewPunch( const QAngle &angleOffset );
+
 	void	VelocityPunch( const Vector &vecForce );
 
 	CBaseEntity *GetNextTarget( void );
@@ -1139,11 +1143,12 @@ public:
 	// Which is remarkably slow.
 	// GetAttribInterface( CBaseEntity *pEntity ) in attribute_manager.h uses
 	//  this function, tests for NULL, and Asserts m_pAttributes == dynamic_cast.
-	inline IHasAttributes *GetHasAttributesInterfacePtr() const { return m_pAttributes; }
+	//inline IHasAttributes *GetHasAttributesInterfacePtr() const { return m_pAttributes; }
 
 protected:
 	// NOTE: m_pAttributes needs to be set in the leaf class constructor.
-	IHasAttributes *m_pAttributes;
+	// Raphael: m_pAttributes was added somewhere in the SourceSDK 2013. In the 2010 it doesn't exist and it's not in Gmod.
+	// IHasAttributes *m_pAttributes;
 
 private:
 	friend class CAI_Senses;
@@ -1852,7 +1857,7 @@ public:
 	virtual void InitializeScriptedEntity( const char * );
 	virtual void ClearLuaData();
 	virtual ILuaObject *GetLuaTable();
-	virtual void *GetLuaEntity();
+	virtual ILuaObject *GetLuaEntity();
 	virtual void Lua_OnEntityInitialized();
 	virtual void SetLuaTable( ILuaObject * );
 	virtual bool HasLuaTable();
@@ -1864,6 +1869,37 @@ public:
 	virtual bool GMOD_ShouldPreventTransmitToPlayer( CBasePlayer * );
 	virtual void GMOD_SetShouldPreventTransmitToPlayer( CBasePlayer *, bool );
 	virtual void *Lua_GetLuaClass();
+	virtual void *GMOD_CreateBoneFollowers( int, char const** );
+	virtual void GMOD_UpdateBoneFollowers();
+	virtual void GMOD_DestroyBoneFollowers();
+	virtual void *GMOD_GetBoneFollowerMgr();
+
+public:
+	char m_strOverrideMaterial[255];
+	bool _offset1;
+	char m_strRealClassName[256];
+	int _offset2[3];
+	float m_CreationTime;
+	BYTE gap0548[4];
+	const char* m_SubMaterials[32];
+	int m_SubMaterialIndex[32]; // This is the index for the string in the networkstring stringtable -> util.NetworkIDToString(i) == m_SubMaterials[i]
+	void* offset3[9];
+	ILuaInterface* m_GMOD_LuaInterface; // A pointer to g_Lua?
+	ILuaObject* m_GMOD_LuaTable; // The Lua table
+	ILuaObject* m_GMOD_LuaObject; // A reference to the lua object -> Player object, Entity object etc
+	bool m_GMOD_bool[32];
+	float m_GMOD_float[32];
+	int m_GMOD_int[32];
+	Vector m_GMOD_Vector[32];
+	QAngle m_GMOD_QAngle[32];
+	EHANDLE m_GMOD_EHANDLE[32];
+	char m_GMOD_String[4][512];
+	void* m_GMOD_DataTable;
+	int m_iCreationID;
+	int m_iMapCreatedID;
+	BYTE gap1328[32];
+	int m_iGModFlags;
+	BYTE gap134C[64];
 };
 
 // Send tables exposed in this module.

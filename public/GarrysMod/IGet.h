@@ -1,8 +1,14 @@
 #pragma once
 
+#include "steam/isteamutils.h"
+
+namespace GarrysMod::Lua
+{
+	class ILuaShared;
+	class ILuaConVars;
+}
+
 class IFileSystem;
-class ILuaShared;
-class ILuaConVars;
 class IMenuSystem;
 class IResources;
 class IIntroScreen;
@@ -25,14 +31,6 @@ class IGMod_Audio;
 class IAnalytics;
 class CSteamID;
 
-enum ETextFilteringContext
-{
-	k_ETextFilteringContextUnknown,
-	k_ETextFilteringContextGameContent,
-	k_ETextFilteringContextChat,
-	k_ETextFilteringContextName
-};
-
 abstract_class IGet
 {
 public:
@@ -41,8 +39,8 @@ public:
 	virtual bool IsDedicatedServer() = 0;
 	virtual int GetClientCount() = 0;
 	virtual IFileSystem* FileSystem() = 0;
-	virtual ILuaShared* LuaShared() = 0;
-	virtual ILuaConVars* LuaConVars() = 0;
+	virtual GarrysMod::Lua::ILuaShared* LuaShared() = 0;
+	virtual GarrysMod::Lua::ILuaConVars* LuaConVars() = 0;
 	virtual IMenuSystem* MenuSystem() = 0;
 	virtual IResources* Resources() = 0;
 	virtual IIntroScreen* IntroScreen() = 0;
@@ -67,9 +65,11 @@ public:
 	virtual IMotionSensor* MotionSensor() = 0;
 	virtual int Version() = 0;
 	virtual const char* VersionStr() = 0;
+	virtual const char* SteamBranch() = 0;
 	virtual IGMod_Audio* Audio() = 0;
 	virtual const char* VersionTimeStr() = 0;
 	virtual IAnalytics Analytics() = 0;
+	virtual const char* BuildName() = 0;
 	virtual void UpdateRichPresense( const char* status ) = 0;
 	virtual void ResetRichPresense() = 0;
 	virtual void FilterText(const char*, char*, int, ETextFilteringContext, CSteamID) = 0;

@@ -1,7 +1,7 @@
 local current_dir = _SCRIPT_DIR
 
 function IncludeSDKCommon()
-	IncludePackage("sourcesdk_common")
+	local refcount = IncludePackage("sourcesdk_common")
 
 	local _project = project()
 
@@ -18,16 +18,47 @@ function IncludeSDKCommon()
 		externalincludedirs(current_dir .. "/../game/client")
 	end
 
-	files({
-		current_dir .. "/../interfaces/interfaces.cpp",
-		current_dir .. "/../public/interfaces/interfaces.h"
-	})
-	vpaths({
-		["SourceSDK"] = {
-			current_dir .. "/../interfaces/interfaces.cpp",
-			current_dir .. "/../public/interfaces/interfaces.h"
-		}
-	})
+	filter("system:windows")
+		defines("WIN32")
+		disablewarnings("4324")
+		libdirs(current_dir .. "/../lib/public")
 
-	IncludeSDKCommonInternal()
+		filter({"system:windows", "configurations:Debug"})
+			linkoptions("/NODEFAULTLIB:\"libcmt\"")
+
+	filter("system:linux")
+		disablewarnings({
+			"unused-local-typedefs",
+			"unused-parameter",
+			"strict-aliasing",
+			"unknown-pragmas",
+			"undef",
+			"invalid-offsetof"
+		})
+		defines({"COMPILER_GCC", "POSIX", "_POSIX", "LINUX", "_LINUX", "GNUC", "NO_MALLOC_OVERRIDE"})
+		libdirs(current_dir .. "/../lib/public/linux32")
+
+	filter("system:macosx")
+		disablewarnings({
+			"unused-local-typedef",
+			"unused-parameter",
+			"unused-private-field",
+			"overloaded-virtual",
+			"unknown-pragmas",
+			"unused-variable",
+			"unknown-warning-option",
+			"undef",
+			"invalid-offsetof"
+		})
+		defines({"COMPILER_GCC", "POSIX", "_POSIX", "OSX", "GNUC", "NO_MALLOC_OVERRIDE"})
+		libdirs(current_dir .. "/../lib/public/osx32")
+
+	filter({})
+
+	links("common")
+	if refcount == 1 then
+		dofile(current_dir .. "/premake5_create_project.lua")
+	end
+
+	project(_project.name)
 end

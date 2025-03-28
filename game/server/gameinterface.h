@@ -142,21 +142,6 @@ public:
 	virtual const char *GetServerBrowserMapOverride() OVERRIDE;
 	virtual const char *GetServerBrowserGameData() OVERRIDE;
 
-	// Called to add output to the status command
-	virtual void 			Status( void (*print) (const char *fmt, ...) ) OVERRIDE;
-
-	virtual void PrepareLevelResources( /* in/out */ char *pszMapName, size_t nMapNameSize,
-	                                    /* in/out */ char *pszMapFile, size_t nMapFileSize ) OVERRIDE;
-
-	virtual ePrepareLevelResourcesResult AsyncPrepareLevelResources( /* in/out */ char *pszMapName, size_t nMapNameSize,
-	                                                                 /* in/out */ char *pszMapFile, size_t nMapFileSize,
-	                                                                 float *flProgress = NULL ) OVERRIDE;
-
-	virtual eCanProvideLevelResult CanProvideLevel( /* in/out */ char *pMapName, int nMapNameMax ) OVERRIDE;
-
-	// Called to see if the game server is okay with a manual changelevel or map command
-	virtual bool			IsManualMapChangeOkay( const char **pszReason ) OVERRIDE;
-
 	virtual bool 			GMOD_CheckPassword( long long, char const*, char const*, char const*, char const*, char *, uint ) OVERRIDE;
 	virtual void 			GMOD_ClientSignOnStateChanged( int userID, int oldState, int newState ) OVERRIDE;
 	virtual void 			GMOD_OnAllSoundsStoppedSV() OVERRIDE;

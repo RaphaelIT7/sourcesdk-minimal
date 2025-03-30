@@ -11,13 +11,11 @@
 #pragma once
 #endif
 
-class CUserCmd;
 #include "GameEventListener.h"
 #include <igamesystem.h>
 #include <ihltvdirector.h>
 #include <ihltv.h>
 #include <utlrbtree.h>
-#include <shareddefs.h>
 
 #define	HLTV_MIN_DIRECTOR_DELAY		10	// minimum delay if director is enabled
 #define	HLTV_MAX_DELAY				120	// maximum delay
@@ -40,7 +38,7 @@ public:
 class CHLTVDirector : public CGameEventListener, public CBaseGameSystemPerFrame, public IHLTVDirector
 {
 public:
-	//DECLARE_CLASS_NOBASE( CHLTVDirector );
+	DECLARE_CLASS_NOBASE( CHLTVDirector );
 
 	virtual char const *Name() { return "CHLTVDirector"; }
 
@@ -69,13 +67,13 @@ public: // CBaseGameSystem overrides
 	virtual void	Shutdown();
 	virtual void	FrameUpdatePostEntityThink();
 	virtual void	LevelInitPostEntity();
-	virtual const char	*GetFixedCameraEntityName( void ) { return "point_viewcontrol"; }
+	virtual char	*GetFixedCameraEntityName( void ) { return "point_viewcontrol"; }
 
 			bool	SetCameraMan( int iPlayerIndex );
 			int		GetCameraMan() { return m_iCameraManIndex; }
 
 
-public:
+protected:
 
 	virtual void	StartNewShot();	
 	virtual void	StartRandomShot();

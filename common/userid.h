@@ -15,7 +15,7 @@
 #include "steam/steamclientpublic.h"
 #if !defined( INCLUDED_STEAM_STEAMUSERIDTYPES_H )
 #define INCLUDED_STEAM2_USERID_STRUCTS	
-#include "steamcommon.h"
+#include "SteamCommon.h"
 #endif
 
 #define IDTYPE_WON		0

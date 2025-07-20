@@ -2179,7 +2179,8 @@ extern "C"
 //---------------------------------------------------------
 #if !defined(POSIX) || defined( _GAMECONSOLE )
 
-inline void CThreadMutex::Lock()
+// On Windows, these are already packed inside the tier0.lib so we don't define them here as else we would conflict!
+/*inline void CThreadMutex::Lock()
 {
 #if defined(_PS3)
 	#ifndef NO_THREAD_SYNC
@@ -2230,7 +2231,7 @@ inline void CThreadMutex::Unlock()
 	#endif
 	UnlockSilent();
 #endif
-}
+}*/
 
 //---------------------------------------------------------
 

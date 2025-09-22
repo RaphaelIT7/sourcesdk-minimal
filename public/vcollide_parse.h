@@ -15,11 +15,12 @@
 
 struct solid_t
 {
-	int		index;
 	char	name[512];
 	char	parent[512];
 	char	surfaceprop[512];
 	Vector	massCenterOverride;
+	int		index;
+	int		contents;
 	objectparams_t params;
 };
 

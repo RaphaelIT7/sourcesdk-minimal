@@ -687,6 +687,9 @@ public:
 	virtual void 			GMOD_ClientConnected( int userID ) = 0;
 
 	virtual void 			GMOD_SentClientStringTables( int userID ) = 0;
+
+	// Called when a voice packet is received in SV_BroadcastVoiceData
+	virtual void			GMOD_OnReceivedVoicePacket( edict_t *pPlayer ) = 0;
 };
 
 typedef IServerGameClients IServerGameClients003;

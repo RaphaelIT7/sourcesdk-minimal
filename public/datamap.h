@@ -67,6 +67,11 @@ typedef enum _fieldtypes
 	FIELD_INTEGER64,		// 64bit integer
 
 	FIELD_VECTOR4D,			// 4 floats
+	
+	FIELD_UNKNOWN_1,
+	FIELD_GMODDATATABLE,
+	FIELD_UNKNOWN_2,
+	FIELD_TIME64,			// Double
 
 	FIELD_TYPECOUNT,		// MUST BE LAST
 } fieldtype_t;

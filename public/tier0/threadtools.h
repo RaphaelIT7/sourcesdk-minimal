@@ -999,7 +999,7 @@ private:
 
 #ifdef THREAD_MUTEX_TRACING_SUPPORTED
 	// Debugging (always herge to allow mixed debug/release builds w/o changing size)
-	uint	m_currentOwnerID;
+	ThreadId_t	m_currentOwnerID;
 	uint16	m_lockCount;
 	bool	m_bTrace;
 #endif
@@ -2263,7 +2263,7 @@ inline bool CThreadMutex::AssertOwnedByCurrentThread()
 #ifdef _WIN32
 	if (ThreadGetCurrentId() == m_currentOwnerID)
 		return true;
-	AssertMsg3( 0, "Expected thread %u as owner of lock 0x%p, but %u owns", ThreadGetCurrentId(), (CRITICAL_SECTION *)&m_CriticalSection, m_currentOwnerID );
+	AssertMsg3( 0, "Expected thread %u as owner of lock 0x%p, but %lu owns", ThreadGetCurrentId(), (CRITICAL_SECTION *)&m_CriticalSection, m_currentOwnerID );
 	return false;
 #elif defined( _PS3 )
 		return true;

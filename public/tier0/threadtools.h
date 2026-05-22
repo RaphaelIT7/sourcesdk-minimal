@@ -65,7 +65,13 @@ const unsigned TT_INFINITE = 0xffffffff;
 
 #endif // NO_THREAD_LOCAL
 
-typedef unsigned long ThreadId_t;
+#ifdef PLATFORM_64BITS
+typedef uint64 ThreadId_t;
+#else
+typedef uint32 ThreadId_t;
+#endif
+
+static const ThreadId_t INVALID_THREAD_ID = ~ThreadId_t(0);
 
 //-----------------------------------------------------------------------------
 //
@@ -430,6 +436,14 @@ template <class T = intp>
 #endif // NO_THREAD_LOCAL
 #endif // !__AFXTLS_H__
 
+#ifdef PLATFORM_64BITS
+#define ThreadInterlockedExchange_SizeT ThreadInterlockedExchange64
+#define ThreadInterlockedAssignIf_SizeT ThreadInterlockedAssignIf64
+#else
+#define ThreadInterlockedExchange_SizeT ThreadInterlockedExchange
+#define ThreadInterlockedAssignIf_SizeT ThreadInterlockedAssignIf
+#endif
+
 //-----------------------------------------------------------------------------
 //
 // A super-fast thread-safe integer A simple class encapsulating the notion of an 
@@ -643,7 +657,7 @@ private:
 
 #ifdef THREAD_MUTEX_TRACING_SUPPORTED
 	// Debugging (always here to allow mixed debug/release builds w/o changing size)
-	uint	m_currentOwnerID;
+	ThreadId_t	m_currentOwnerID;
 	uint16	m_lockCount;
 	bool	m_bTrace;
 #endif
@@ -671,7 +685,7 @@ public:
 	}
 
 private:
-	FORCEINLINE bool TryLockInline( const uint32 threadId ) volatile
+	FORCEINLINE bool TryLockInline( const ThreadId_t threadId ) volatile
 	{
 		if ( threadId != m_ownerID && !ThreadInterlockedAssignIf( (volatile long *)&m_ownerID, (long)threadId, 0 ) )
 			return false;
@@ -681,12 +695,12 @@ private:
 		return true;
 	}
 
-	bool TryLock( const uint32 threadId ) volatile
+	bool TryLock( const ThreadId_t threadId ) volatile
 	{
 		return TryLockInline( threadId );
 	}
 
-	PLATFORM_CLASS void Lock( const uint32 threadId, unsigned nSpinSleepTime ) volatile;
+	PLATFORM_CLASS void Lock( const ThreadId_t threadId, unsigned nSpinSleepTime ) volatile;
 
 public:
 	bool TryLock() volatile
@@ -706,12 +720,12 @@ public:
 #endif
 	void Lock( unsigned int nSpinSleepTime = 0 ) volatile
 	{
-		const uint32 threadId = ThreadGetCurrentId();
+		const ThreadId_t threadId = ThreadGetCurrentId();
 
 		if ( !TryLockInline( threadId ) )
 		{
 			ThreadPause();
-			Lock( threadId, nSpinSleepTime );
+			Lock( (uint32)threadId, nSpinSleepTime );
 		}
 #ifdef _DEBUG
 		if ( m_ownerID != ThreadGetCurrentId() )
@@ -742,7 +756,7 @@ public:
 		if ( !m_depth )
 		{
 			ThreadMemoryBarrier();
-			ThreadInterlockedExchange( &m_ownerID, 0 );
+			ThreadInterlockedExchange_SizeT( (volatile intp*)&m_ownerID, 0 );
     	}
     }
 
@@ -755,10 +769,10 @@ public:
 	bool AssertOwnedByCurrentThread()	{ return true; }
 	void SetTrace( bool )				{}
 
-	uint32 GetOwnerId() const			{ return m_ownerID;	}
+	ThreadId_t GetOwnerId() const			{ return m_ownerID;	}
 	int	GetDepth() const				{ return m_depth; }
 private:
-	volatile uint32 m_ownerID;
+	volatile ThreadId_t m_ownerID;
 	int				m_depth;
 };
 

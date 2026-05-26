@@ -1,5 +1,6 @@
 local current_dir = _SCRIPT_DIR
 
+GMOD_X86_64 = true
 function IncludeSDKCommonInternal()
 	filter({})
 

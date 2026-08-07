@@ -29,6 +29,10 @@
 #define FOR_EACH_LL_BACK( listName, iteratorName ) \
 	for( auto iteratorName=(listName).Tail(); (listName).IsUtlLinkedList && iteratorName != (listName).InvalidIndex(); iteratorName = (listName).Previous( iteratorName ) )
 
+#define FOR_EACH_LL_( listName, iteratorName ) \
+	for( decltype(listName)::iterator iteratorName=(listName).begin(); iteratorName != (listName).end(); ++iteratorName )
+
+
 //-----------------------------------------------------------------------------
 // class CUtlLinkedList:
 // description:

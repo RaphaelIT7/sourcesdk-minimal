@@ -517,7 +517,7 @@ public:
 	virtual void			Close( FileHandle_t file ) = 0;
 
 
-	virtual void				Seek( FileHandle_t file, long long pos, FileSystemSeek_t seekType ) = 0;
+	virtual void				Seek( FileHandle_t file, int64 pos, FileSystemSeek_t seekType ) = 0;
 	virtual unsigned int		Tell( FileHandle_t file ) = 0;
 	virtual unsigned int		Size( FileHandle_t file ) = 0;
 	virtual unsigned int		Size( const char *pFileName, const char *pPathID = 0 ) = 0;

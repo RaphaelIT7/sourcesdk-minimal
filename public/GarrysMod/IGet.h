@@ -2,10 +2,13 @@
 
 #include "steam/isteamutils.h"
 
-namespace GarrysMod::Lua
+namespace GarrysMod
 {
-	class ILuaShared;
-	class ILuaConVars;
+	namespace Lua
+	{
+		class ILuaShared;
+		class ILuaConVars;
+	}
 }
 
 class IFileSystem;

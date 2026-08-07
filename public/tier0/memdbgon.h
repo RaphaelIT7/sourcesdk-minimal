@@ -11,6 +11,9 @@
 // to include this potentially multiple times (since we can deactivate debugging
 // by including memdbgoff.h)
 
+// RaphaelIT7: Kill me later for this.
+#undef _INC_CRTDBG
+
 #if !defined(STEAM) && !defined(NO_MALLOC_OVERRIDE)
 
 // SPECIAL NOTE #2: This must be the final include in a .cpp or .h file!!!

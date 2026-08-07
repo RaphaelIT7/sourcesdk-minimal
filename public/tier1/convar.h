@@ -537,6 +537,10 @@ private:
 	virtual void				Init();
 
 protected:
+	// RaphaelIT7: Important! This is used by the client for some important checks! You will crash without!
+	virtual int GetFlags() { return m_pParent->m_nFlags; }
+
+private:
 
 	// This either points to "this" or it points to the original declaration of a ConVar.
 	// This allows ConVars to exist in separate modules, and they all use the first one to be declared.

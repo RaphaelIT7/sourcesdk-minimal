@@ -927,8 +927,8 @@ public:
 	// Called when we unload a file, to remove that file's info for pure server purposes.
 	virtual void			NotifyFileUnloaded( const char *pszFilename, const char *pPathId ) = 0;
 
-	virtual void RemoveSearchPathsByGroup( int ) = 0;
-	virtual void SetGet( IGet * ) = 0;
+	virtual void RemoveSearchPathsByGroup( int iPriorityGroup ) = 0;
+	virtual void SetGet( IGet *pGet ) = 0;
 	virtual Addon::FileSystem *Addons( ) = 0;
 	virtual Gamemode::System *Gamemodes( ) = 0;
 	virtual GameDepot::System *Games( ) = 0;
@@ -936,9 +936,9 @@ public:
 	virtual CLanguage *Language( ) = 0;
 	virtual void DoFilesystemRefresh( ) = 0;
 	virtual int LastFilesystemRefresh( ) = 0;
-	virtual void AddVPKFileFromPath( const char *, const char *, unsigned int ) = 0;
-	virtual void GMOD_SetupDefaultPaths( const char *, const char * ) = 0;
-	virtual void GMOD_FixPathCase( char *, size_t ) = 0;
+	virtual void AddVPKFileFromPath( const char *pPath, const char *pPathID, SearchPathAdd_t addType ) = 0;
+	virtual void GMOD_SetupDefaultPaths( const char *pszGamePath, const char *pszModPath ) = 0;
+	virtual void GMOD_FixPathCase( char *pszUnknown1, size_t nUnknown2 ) = 0;
 };
 
 //-----------------------------------------------------------------------------

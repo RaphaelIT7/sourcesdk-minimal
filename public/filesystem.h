@@ -265,11 +265,13 @@ enum FilesystemMountRetval_t
 	FILESYSTEM_MOUNT_FAILED,
 };
 
-enum SearchPathAdd_t
-{
-	PATH_ADD_TO_HEAD,		// First path searched
-	PATH_ADD_TO_TAIL,		// Last path searched
-};
+// SearchPathAdd_t - RaphaelIT7: GMod doesn't use the enum due to their wacky PriorityGroup system
+using SearchPathAdd_t = unsigned int;
+
+// First path searched
+#define PATH_ADD_TO_HEAD 0
+// Last path searched
+#define PATH_ADD_TO_TAIL 1
 
 enum FilesystemOpenExFlags_t
 {

@@ -303,9 +303,23 @@ enum CPathPriorityGroup_t
 	GN_CURRENTGAME,
 	// sourceengine/ vpks that aren't content_ (mounted to only GAME)
 	GN_SOURCESDK,
+	// A Bad Legacy addons (mounted to GAME & thirdparty)
+	// An Legacy addon is considered bad if it contains one of the game scripts groups
+	// -> /scripts/game_sounds_manifest.txt
+	// -> /scripts/game_sounds_physics.txt
+	// -> /scripts/propdata.txt
+	// 
+	// -> /scripts/kb_act.lst
+	// -> /scripts/kb_def.lst
+	// -> /scripts/soundmixers.txt
+	// 
+	// -> /resource/loadingdialog.res
+	// -> /resource/clientscheme.res
+	// -> /resource/gamemenu.res
 	GN_BADDONCONTENT,
-	//content_[NAME].vpk like hl2 & cstrike (mounted to GAME & also [GameName/hl2/cstrike]
+	// content_[NAME].vpk like hl2 & cstrike (mounted to GAME & also [GameName/hl2/cstrike]
 	GN_GAMECONTENT,
+	// Any path mounted by the mount.cfg
 	GN_MOUNTCFG,
 	// download/ folder (mounted to GAME & DOWNLOAD)
 	GN_DOWNLOADS,

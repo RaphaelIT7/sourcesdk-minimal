@@ -251,11 +251,11 @@ public:
 
 	virtual void RemoveSearchPathsByGroup( int iPriorityGroup ) OVERRIDE { m_pFileSystemPassThru->RemoveSearchPathsByGroup( iPriorityGroup ); }
 	virtual void SetGet( IGet *pGet ) OVERRIDE { m_pFileSystemPassThru->SetGet( pGet ); }
-	virtual Addon::FileSystem *Addons( ) OVERRIDE { return m_pFileSystemPassThru->Addons( ); }
-	virtual Gamemode::System *Gamemodes( ) OVERRIDE { return m_pFileSystemPassThru->Gamemodes( ); }
-	virtual GameDepot::System *Games( ) OVERRIDE { return m_pFileSystemPassThru->Games( ); }
-	virtual LegacyAddons::System *LegacyAddons( ) OVERRIDE { return m_pFileSystemPassThru->LegacyAddons( ); }
-	virtual CLanguage *Language( ) OVERRIDE { return m_pFileSystemPassThru->Language( ); }
+	virtual IAddonSystem *Addons( ) OVERRIDE { return m_pFileSystemPassThru->Addons( ); }
+	virtual IGamemodeSystem *Gamemodes( ) OVERRIDE { return m_pFileSystemPassThru->Gamemodes( ); }
+	virtual IGameDepotSystem *Games( ) OVERRIDE { return m_pFileSystemPassThru->Games( ); }
+	virtual ILegacyAddons *LegacyAddons( ) OVERRIDE { return m_pFileSystemPassThru->LegacyAddons( ); }
+	virtual IGModLanguage *Language( ) OVERRIDE { return m_pFileSystemPassThru->Language( ); }
 	virtual void DoFilesystemRefresh( ) OVERRIDE { m_pFileSystemPassThru->DoFilesystemRefresh( ); }
 	virtual int LastFilesystemRefresh( ) OVERRIDE { return m_pFileSystemPassThru->LastFilesystemRefresh( ); }
 	virtual void AddVPKFileFromPath( const char* pPath, const char* pPathID, SearchPathAdd_t addType ) OVERRIDE { m_pFileSystemPassThru->AddVPKFileFromPath( pPath, pPathID, addType ); }

@@ -324,7 +324,9 @@ enum CPathPriorityGroup_t
 	// download/ folder (mounted to GAME & DOWNLOAD)
 	GN_DOWNLOADS,
 	// Fallback vpks (garrysmod/fallbacks.vpk) (mounted to GAME & MOD)
-	GN_FALLBACKS
+	GN_FALLBACKS,
+	// Workshop
+	GN_WORKSHOP,
 };
 
 // RaphaelIT7: We must shift it to the left by one to respect how GMod does it

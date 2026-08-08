@@ -11,8 +11,6 @@
 // to include this potentially multiple times (since we can deactivate debugging
 // by including memdbgoff.h)
 
-// RaphaelIT7: Kill me later for this.
-#undef _INC_CRTDBG
 
 #if !defined(STEAM) && !defined(NO_MALLOC_OVERRIDE)
 
@@ -27,7 +25,8 @@
 #endif
 
 // If debug build or ndebug and not already included MS custom alloc files, or already included this file
-#if (defined(_DEBUG) || !defined(_INC_CRTDBG)) || defined(MEMDBGON_H)
+// RaphaelIT7: We don't check for _INC_CRTDBG as it broke a lot of things. GMod release builds seem to always use g_pMemAlloc -> have the macros.
+#if (defined(_DEBUG) || defined(MEMDBGON_H)
 
 #include "basetypes.h"
 #ifdef _WIN32

@@ -34,28 +34,14 @@ class KeyValues;
 class IFileList;
 class IThreadPool;
 class CMemoryFileBacking;
+
+// GMOD
 class IGet;
-class CLanguage;
-
-namespace Addon
-{
-	class FileSystem;
-}
-
-namespace Gamemode
-{
-	class System;
-}
-
-namespace GameDepot
-{
-	class System;
-}
-
-namespace LegacyAddons
-{
-	class System;
-}
+class IAddonSystem;
+class IGamemodeSystem;
+class IGameDepotSystem;
+class ILegacyAddons;
+class IGModLanguage;
 
 typedef void * FileHandle_t;
 typedef void * FileCacheHandle_t;
@@ -991,11 +977,11 @@ public:
 
 	virtual void RemoveSearchPathsByGroup( int iPriorityGroup ) = 0;
 	virtual void SetGet( IGet *pGet ) = 0;
-	virtual Addon::FileSystem *Addons( ) = 0;
-	virtual Gamemode::System *Gamemodes( ) = 0;
-	virtual GameDepot::System *Games( ) = 0;
-	virtual LegacyAddons::System *LegacyAddons( ) = 0;
-	virtual CLanguage *Language( ) = 0;
+	virtual IAddonSystem *Addons( ) = 0;
+	virtual IGamemodeSystem *Gamemodes( ) = 0;
+	virtual IGameDepotSystem *Games( ) = 0;
+	virtual ILegacyAddons *LegacyAddons( ) = 0;
+	virtual IGModLanguage *Language( ) = 0;
 	virtual void DoFilesystemRefresh( ) = 0;
 	virtual int LastFilesystemRefresh( ) = 0;
 	virtual void AddVPKFileFromPath( const char *pPath, const char *pPathID, SearchPathAdd_t addType ) = 0;

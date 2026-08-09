@@ -283,7 +283,7 @@ enum CPathPriorityGroup_t
 	// This one means it's an SearchPath created by the engine that was given no specific CPathPriorityGroup_t
 	// The engine will change the group to then be GN_ENGINECORE (which is the default)
 	// So GN_UNSET is simply a placeholder that actually never ends up stored in CSearchPath::m_PriorityGroupID
-	GN_UNSET = 0, // Named GN_DEFAULT in the sourcesdk-minimal yet it really isn't a default.
+	GN_UNSET = 0, // Named GN_DEFAULT in the sourcesdk-minimal & in GMOD yet it really isn't a default.
 	GN_ENGINECORE,
 	// Lua folders (mounted to lsv & lsc & LuaMenu)
 	GN_LUA,

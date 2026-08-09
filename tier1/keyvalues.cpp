@@ -692,12 +692,6 @@ bool KeyValues::LoadFromFile( IBaseFileSystem *filesystem, const char *resourceN
 
 	COM_TimestampedLog( "KeyValues::LoadFromFile(%s%s%s): Begin", pathID ? pathID : "", pathID && resourceName ? "/" : "", resourceName ? resourceName : "" );
 
-	// Keep a cache of keyvalues, try to load it here.
-	if ( bUseCacheForRead && KeyValuesSystem()->LoadFileKeyValuesFromCache( this, resourceName, pathID, filesystem ) ) {
-		COM_TimestampedLog( "KeyValues::LoadFromFile(%s%s%s): End / CacheHit", pathID ? pathID : "", pathID && resourceName ? "/" : "", resourceName ? resourceName : "" );
-		return true;
-	}
-
 	FileHandle_t f = filesystem->Open(resourceName, "rb", pathID);
 	if ( !f )
 	{
@@ -725,13 +719,6 @@ bool KeyValues::LoadFromFile( IBaseFileSystem *filesystem, const char *resourceN
 		buffer[fileSize+1] = 0; // double NULL terminating in case this is a unicode file
 		bRetOK = LoadFromBuffer( resourceName, buffer, filesystem );
 	}
-	
-	// The cache relies on the KeyValuesSystem string table, which will only be valid if we're
-	// using classic mode. 
-	if ( bUseCacheForWrite && bRetOK )
-	{
-		KeyValuesSystem()->AddFileKeyValuesToCache( this, resourceName, pathID );
-	}
 
 	( (IFileSystem *)filesystem )->FreeOptimalReadBuffer( buffer );
 
@@ -756,10 +743,6 @@ bool KeyValues::SaveToFile( IBaseFileSystem *filesystem, const char *resourceNam
 		return false;
 	}
 
-	KeyValuesSystem()->InvalidateCacheForFile( resourceName, pathID );
-	if ( bCacheResult ) {
-		KeyValuesSystem()->AddFileKeyValuesToCache( this, resourceName, pathID );
-	}
 	RecursiveSaveToFile(filesystem, f, NULL, 0, sortKeys, bAllowEmptyString );
 	filesystem->Close(f);
 

@@ -175,7 +175,9 @@ protected:
 
 public:
 	inline ConCommandBase* InternalNext() { return m_pNext; };
+	inline void InternalSetNext( ConCommandBase *pNext ) { m_pNext = pNext; };
 	static inline ConCommandBase* InternalConCommandBases() { return s_pConCommandBases; };
+	static inline void InternalSetConCommandBases( ConCommandBase *pBase ) { s_pConCommandBases = pBase; };
 	static inline IConCommandBaseAccessor* InternalBaseAccessor() { return s_pAccessor; };
 };
 
@@ -420,12 +422,24 @@ private:
 	bool						m_bHasMin;
 	float						m_fMinVal;
 	bool						m_bHasMax;
+
+	// RaphaelIT7:
+	// Custom identifier! Useful when wanting to unregister many convars at once
+	// We cannot put it anywhere else as vstdlib directly accesses fields!
+	// We squeezed it into this offset gap to avoid breaking offsets
+	// Would be great though if it's added to GMod (:pray:)
+	short						m_iIdentifier = -1; // Can't use CVarDLLIdentifier_t since it's too big
+	virtual CVarDLLIdentifier_t	GetDLLIdentifier() const;
+
 	float						m_fMaxVal;
 	
 	// Call this function when ConVar changes
 	FnChangeCallback_t			m_fnChangeCallback;
 
 	CUtlString m_unknown;
+
+public:
+	inline void SetLocalDLLIdentifier( CVarDLLIdentifier_t id ) { m_iIdentifier = id; }
 };
 
 

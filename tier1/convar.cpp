@@ -1267,6 +1267,15 @@ void ConVar::SetDefault( const char *pszDefault )
 	Assert( m_pszDefaultValue );
 }
 
+// RaphaelIT7: Custom!
+CVarDLLIdentifier_t ConVar::GetDLLIdentifier() const
+{
+	if ( m_iIdentifier != -1 )
+		return m_iIdentifier;
+
+	return s_nDLLIdentifier;
+}
+
 //-----------------------------------------------------------------------------
 // This version is simply used to make reading convars simpler.
 // Writing convars isn't allowed in this mode

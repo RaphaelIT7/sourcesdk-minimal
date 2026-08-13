@@ -493,7 +493,7 @@ public:
 		int32_t m_storeId;
 		CPathIDInfo *m_pPathIDInfo;
 		uint32_t _flag0;
-		uint32_t _flag1;
+		CPathPriorityGroup_t m_GroupID;
 		CUtlSymbol m_Path;
 		const char *m_pDebugPath;
 		CPackFile *m_pPackFile;

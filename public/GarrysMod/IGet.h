@@ -34,10 +34,10 @@ class IGMod_Audio;
 class IAnalytics;
 class CSteamID;
 
-abstract_class IGet
+class IGet
 {
 public:
-	virtual void OnLoadFailed( const char* reason ) = 0;
+	virtual void OnLoadFailed( const char *pszReason ) = 0;
 	virtual const char* GameDir() = 0;
 	virtual bool IsDedicatedServer() = 0;
 	virtual int GetClientCount() = 0;
@@ -51,14 +51,8 @@ public:
 	virtual IServerAddons* ServerAddons() = 0;
 	virtual IGMHTML* HTML() = 0;
 	virtual ISteamHTTP* SteamHTTP() = 0;
-	virtual ISteamRemoteStorage* SteamRemoteStorage() = 0;
 	virtual ISteamUtils* SteamUtils() = 0;
-	virtual ISteamApps* SteamApps() = 0;
-	virtual ISteamScreenshots* SteamScreenshots() = 0;
-	virtual ISteamUser* SteamUser() = 0;
-	virtual ISteamFriends* SteamFriends() = 0;
 	virtual ISteamUGC* SteamUGC() = 0;
-	virtual ISteamGameServer* SteamGameServer() = 0;
 	virtual ISteamNetworking* SteamNetworking() = 0;
 	virtual void Initialize( IFileSystem* ) = 0;
 	virtual void ShutDown() = 0;
@@ -78,3 +72,5 @@ public:
 	virtual const char* BaseDir() = 0; // ToDo: Check if this is dedicated server only
 	virtual void FilterText(const char*, char*, int, ETextFilteringContext, CSteamID) = 0;
 };
+
+extern IGet* get;

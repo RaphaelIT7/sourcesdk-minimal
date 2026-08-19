@@ -232,6 +232,8 @@ public:
 			return (&**this);
 		}
 
+		operator const ElemType_t*() const & { return (&**this); }
+
 	protected:
 		// Use a pointer rather than a reference so that we can support
 		// assignment of iterators.

@@ -333,7 +333,9 @@ enum CPathPriorityGroup_t
 #define PRIORITY_GROUP_HEAD(group) ((int)group<<1)
 #define PRIORITY_GROUP_TAIL(group) (PATH_ADD_TO_TAIL | ((int)group<<1))
 #define PATH_ADD_MASK 0x1
-#define PATH_PRIORITY_MASK 0xFFFFFEFF
+
+// RaphaelIT7: We only select bits 1-7, example: (CPathPriorityGroup_t)( ( addType & PATH_PRIORITY_MASK ) >> 1 )
+#define PATH_PRIORITY_MASK 0xFE
 
 enum FilesystemOpenExFlags_t
 {

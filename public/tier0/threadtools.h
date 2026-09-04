@@ -1644,16 +1644,21 @@ class PLATFORM_CLASS CThreadRWLock
 {
 public:
 	CThreadRWLock();
+#ifdef WIN32
+	~CThreadRWLock();
+#endif
 
 	void LockForRead();
 	void UnlockRead();
 	void LockForWrite();
 	void UnlockWrite();
 
+#ifndef WIN32
 	void LockForRead() const { const_cast<CThreadRWLock *>(this)->LockForRead(); }
 	void UnlockRead() const { const_cast<CThreadRWLock *>(this)->UnlockRead(); }
 	void LockForWrite() const { const_cast<CThreadRWLock *>(this)->LockForWrite(); }
 	void UnlockWrite() const { const_cast<CThreadRWLock *>(this)->UnlockWrite(); }
+#endif
 
 private:
 	void WaitForRead();
@@ -2366,6 +2371,7 @@ inline void CThreadMutex::SetTrace(bool fTrace)
 //
 //-----------------------------------------------------------------------------
 
+#ifndef WIN32
 inline CThreadRWLock::CThreadRWLock()
 :	m_CanRead( true ),
 	m_nWriters( 0 ),
@@ -2395,6 +2401,7 @@ inline void CThreadRWLock::UnlockRead()
 	}
 	m_mutex.Unlock();
 }
+#endif
 
 
 //-----------------------------------------------------------------------------

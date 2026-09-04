@@ -1105,16 +1105,21 @@ class PLATFORM_CLASS CThreadRWLock
 {
 public:
 	CThreadRWLock();
+#ifdef WIN32
+	~CThreadRWLock();
+#endif
 
 	void LockForRead();
 	void UnlockRead();
 	void LockForWrite();
 	void UnlockWrite();
 
+#ifndef WIN32
 	void LockForRead() const { const_cast<CThreadRWLock *>(this)->LockForRead(); }
 	void UnlockRead() const { const_cast<CThreadRWLock *>(this)->UnlockRead(); }
 	void LockForWrite() const { const_cast<CThreadRWLock *>(this)->LockForWrite(); }
 	void UnlockWrite() const { const_cast<CThreadRWLock *>(this)->UnlockWrite(); }
+#endif
 
 private:
 	void WaitForRead();
@@ -1665,8 +1670,6 @@ inline void CThreadMutex::SetTrace(bool fTrace)
 {
 }
 
-#endif // POSIX
-
 //-----------------------------------------------------------------------------
 //
 // CThreadRWLock inline functions
@@ -1702,6 +1705,8 @@ inline void CThreadRWLock::UnlockRead()
 	}
 	m_mutex.Unlock();
 }
+#endif // POSIX
+
 
 
 //-----------------------------------------------------------------------------
@@ -1710,6 +1715,7 @@ inline void CThreadRWLock::UnlockRead()
 //
 //-----------------------------------------------------------------------------
 
+#ifndef WIN32
 inline bool CThreadSpinRWLock::AssignIf( const LockInfo_t &newValue, const LockInfo_t &comperand )
 {
 	return ThreadInterlockedAssignIf64( (int64 *)&m_lockInfo, *((int64 *)&newValue), *((int64 *)&comperand) );
@@ -1771,7 +1777,6 @@ inline bool CThreadSpinRWLock::TryLockForRead()
 	return bSuccess;
 }
 
-#ifndef WIN32
 inline void CThreadSpinRWLock::LockForWrite()
 {
 	const uint32 threadId = ThreadGetCurrentId();

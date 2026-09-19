@@ -72,7 +72,7 @@ public:
 	virtual void	SetFileTransmissionMode(bool bBackgroundMode) = 0;
 	virtual void	SetCompressionMode( bool bUseCompression ) = 0;
 	virtual unsigned int RequestFile(RequestFile_t, unsigned int) = 0;
-	virtual float	GetTimeSinceLastReceived( void ) const = 0;	// get time since last received packet in seconds
+	virtual double	GetTimeSinceLastReceived( void ) const = 0;	// get time since last received packet in seconds
 
 	virtual void	SetMaxBufferSize(bool bReliable, int nBytes, bool bVoice = false ) = 0;
 

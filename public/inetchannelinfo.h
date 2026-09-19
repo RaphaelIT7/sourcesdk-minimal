@@ -44,8 +44,8 @@ public:
 	
 	virtual const char  *GetName( void ) const = 0;	// get channel name
 	virtual const char  *GetAddress( void ) const = 0; // get channel IP address as string
-	virtual float		GetTime( void ) const = 0;	// current net time
-	virtual float		GetTimeConnected( void ) const = 0;	// get connection time in seconds
+	virtual double		GetTime( void ) const = 0;	// current net time
+	virtual double		GetTimeConnected( void ) const = 0;	// get connection time in seconds
 	virtual int			GetBufferSize( void ) const = 0;	// netchannel packet history size
 	virtual int			GetDataRate( void ) const = 0; // send data rate in byte/sec
 	
@@ -65,7 +65,7 @@ public:
 	virtual float		GetPacketTime( int flow, int frame_number ) const = 0; // time when packet was send
 	virtual int			GetPacketBytes( int flow, int frame_number, int group ) const = 0; // group size of this packet
 	virtual bool		GetStreamProgress( int flow, int *received, int *total ) const = 0;  // TCP progress if transmitting
-	virtual float		GetTimeSinceLastReceived( void ) const = 0;	// get time since last recieved packet in seconds
+	virtual double		GetTimeSinceLastReceived( void ) const = 0;	// get time since last recieved packet in seconds
 	virtual	float		GetCommandInterpolationAmount( int flow, int frame_number ) const = 0;
 	virtual void		GetPacketResponseLatency( int flow, int frame_number, int *pnLatencyMsecs, int *pnChoke ) const = 0;
 	virtual void		GetRemoteFramerate( float *pflFrameTime, float *pflFrameTimeStdDeviation ) const = 0;

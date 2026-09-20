@@ -21,6 +21,12 @@
 #include "const.h"
 #include "inetchannel.h"
 
+#define MAX_FRAGMENTS_BITS	5	// How many fragments we can send at once
+#define MAX_FRAGMENTS	(1 << MAX_FRAGMENTS_BITS) - 1  // Maximum number of fragments we can safely transmit. -1 as else we would go over MAX_FRAGMENTS_BITS
+
+#undef MAX_ROUTABLE_PAYLOAD
+#define MAX_ROUTABLE_PAYLOAD		(FRAGMENT_SIZE * FRAGMENT_SIZE)	// Matches x360 size(1260). Update: Won't match anymore
+
 // How fast to converge flow estimates
 #define FLOW_AVG ( 3.0F / 4.0F )
  // Don't compute more often than this
@@ -30,21 +36,8 @@
 #define NET_FRAMES_BACKUP	64	// must be power of 2
 #define NET_FRAMES_MASK		(NET_FRAMES_BACKUP-1)
 
-// RaphaelIT7: log function for constexpr numbers - mainly used to figure out how many bits for networking are needed for a limit
-constexpr int RequiredBits(int v)
-{
-    int bits = 0;
-    while ((1 << bits) < v)
-        ++bits;
-
-    return bits;
-}
-
-constexpr int MAX_SUBCHANNELS = 16;	// we have x alternative send&wait channels
-constexpr int SUBCHANNEL_BITS = RequiredBits(MAX_SUBCHANNELS);
-
-constexpr int MAX_FRAGMENTS_BITS = 5;	// How many fragments we can send at once
-constexpr int MAX_FRAGMENTS = (1 << MAX_FRAGMENTS_BITS) - 1;  // Maximum number of fragments we can safely transmit. -1 as else we would go over MAX_FRAGMENTS_BITS
+#define SUBCHANNEL_BITS		4	// raising it above 5 would require changes to m_nOutReliableState & m_nInReliableState as they couldn't hold the states anymore.
+#define MAX_SUBCHANNELS		(1 << SUBCHANNEL_BITS) // we have 16 alternative send&wait bits
 
 #define SUBCHANNEL_FREE		0	// subchannel is free to use
 #define SUBCHANNEL_TOSEND	1	// subchannel has data, but not send yet
@@ -98,7 +91,7 @@ public: // netchan structurs
 	typedef struct netframe_s
 	{
 		// Data received from server
-		float			time;			// net_time received/send
+		double			time;			// net_time received/send
 		int				size;			// total size in bytes
 		float			latency;		// raw ping for this packet, not cleaned. set when acknowledged otherwise -1.
 		float			avg_latency;	// averaged ping for this packet
@@ -133,9 +126,9 @@ public:	// INetChannelInfo interface
 	
 	const char  *GetName( void ) const;
 	const char  *GetAddress( void ) const;
-	float		GetTime( void ) const;
-	float		GetTimeConnected( void ) const;
-	float		GetTimeSinceLastReceived( void ) const;
+	double		GetTime( void ) const;
+	double		GetTimeConnected( void ) const;
+	double		GetTimeSinceLastReceived( void ) const;
 	int			GetDataRate( void ) const;
 	int			GetBufferSize( void ) const;
 		
@@ -186,6 +179,7 @@ public:	// INetChannel interface
 	bool		SendFile(const char *filename, unsigned int transferID); // transmit a local file
 	void		SetChoked( void ); // choke a packet
 	int			SendDatagram(bf_write *data); // build and send datagram packet
+	unsigned int RequestFile(RequestFile_t, unsigned int) { return 0; }; // request remote file to upload, returns request ID
 	unsigned int RequestFile(const char *filename); // request remote file to upload, returns request ID
 	void RequestFile_OLD(const char *filename, unsigned int transferID); // request remote file to upload, returns request ID
 	void		DenyFile(const char *filename, unsigned int transferID); // deny a file request
@@ -309,7 +303,7 @@ public:
 	netadr_t	remote_address;  
 	
 	// For timeouts.  Time last message was received.
-	float		last_received;		
+	double		last_received;		
 	// Time when channel was connected.
 	double	  connect_time;	   
 
@@ -363,6 +357,10 @@ public:
 	bool						m_bStreamContainsChallenge;  // true if PACKET_FLAG_CHALLENGE was set when receiving packets from the sender
 
 	int							m_nProtocolVersion;		// PROTOCOL_VERSION if we're not playing a demo - otherwise, whatever was in the demo header's networkprotocol if the CNetChan instance was created by a demo player.
+	
+	// GMod Only - Network settings used.
+	int fragmentSize; // How big one fragment is
+	int subchanCount; // How many total subchannels are used
 };
 
 

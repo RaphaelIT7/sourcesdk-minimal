@@ -7,7 +7,7 @@ EXPORTS
 ??0CThreadLocalBase@@QAE@XZ
 ??0CThreadMutex@@QAE@XZ
 ??0CThreadRWLock@@QAE@XZ
-??0CThreadSemaphore@@QAE@JJ@Z
+??0CThreadSemaphore@@QAE@HH@Z
 ??0CThreadSpinRWLock@@QAE@XZ
 ??0CThreadSyncObject@@IAE@XZ
 ??0CVProfNode@@QAE@PBDHPAV0@0H@Z
@@ -59,7 +59,7 @@ EXPORTS
 ?ConLog@@YAXPBDZZ
 ?ConMsg@@YAXPBDZZ
 ?ConWarning@@YAXPBDZZ
-?CreateSimpleThread@@YAPAUThreadHandle_t__@@P6AIPAX@Z0PAKI@Z
+?CreateSimpleThread@@YAPAUThreadHandle_t__@@P6AIPAX@Z0PAII@Z
 ?DevLog@@YAXPBDZZ
 ?DevMsg@@YAXPBDZZ
 ?DevWarning@@YAXPBDZZ
@@ -162,7 +162,7 @@ EXPORTS
 ?PushGroup@CVProfile@@QAEXH@Z
 ?RegisterNumBudgetGroupsChangedCallBack@CVProfile@@QAEXP6AXXZ@Z
 ?Release@CThreadFullMutex@@QAE_NXZ
-?Release@CThreadSemaphore@@QAE_NJPAJ@Z
+?Release@CThreadSemaphore@@QAE_NHPAH@Z
 ?Reply@CWorkerThread@@QAEXI@Z
 ?Reset@CThreadEvent@@QAE_NXZ
 ?Reset@CVProfNode@@QAEXXZ
@@ -316,14 +316,18 @@ NetMsg
 NetWarning
 Plat_Alloc
 Plat_ApplyHardwareDataBreakpointsToNewThread
+Plat_ConvertToLocalTime
 Plat_DebugString
+Plat_ExitProcess
 Plat_FastVerifyHardwareKey
 Plat_FloatTime
 Plat_Free
 Plat_GetCommandLine
 Plat_GetCommandLineA
+Plat_GetLocalTime
 Plat_GetMemPageSize
 Plat_GetPagedPoolInfo
+Plat_GetTimeString
 Plat_IsInBenchmarkMode
 Plat_IsInDebugSession
 Plat_MSTime

@@ -59,8 +59,8 @@ public:
 	void PacketEnd( void );
 	
 	void FileReceived( const char *fileName, unsigned int transferID );
-	void FileRequested(const char *fileName, unsigned int transferID );
-	void FileDenied( const char *fileName, unsigned int transferID );
+	void FileRequested( RequestFile_t requestFile, unsigned int transferID, unsigned int transferID );
+	void FileDenied( unsigned int transferID );
 	void FileSent( const char *fileName, unsigned int transferID );
 	
 	bool ProcessConnectionlessPacket( netpacket_t *packet );

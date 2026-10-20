@@ -234,8 +234,8 @@ public:
 	virtual void			SetViewModel();
 
 	virtual bool			HasWeaponIdleTimeElapsed( void );
-	virtual void			SetWeaponIdleTime( float time );
-	virtual float			GetWeaponIdleTime( void );
+	virtual void			SetWeaponIdleTime( double time );
+	virtual double			GetWeaponIdleTime( void );
 
 	// Weapon selection
 	virtual bool			HasAnyAmmo( void );							// Returns true is weapon has ammo
@@ -311,7 +311,7 @@ public:
 	virtual float			GetMinRestTime() { return 0.3; }
 	virtual float			GetMaxRestTime() { return 0.6; }
 	virtual int				GetRandomBurst() { return random->RandomInt( GetMinBurst(), GetMaxBurst() ); }
-	virtual void			WeaponSound( WeaponSound_t sound_type, float soundtime = 0.0f );
+	virtual void			WeaponSound( WeaponSound_t sound_type, double soundtime = 0.0 );
 	virtual void			StopWeaponSound( WeaponSound_t sound_type );
 	virtual const WeaponProficiencyInfo_t *GetProficiencyValues();
 

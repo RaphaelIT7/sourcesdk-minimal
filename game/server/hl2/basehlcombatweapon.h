@@ -76,7 +76,7 @@ public:
 	virtual float	GetFireRate( void );
 
 	virtual bool	Deploy( void );
-	virtual void	WeaponSound( WeaponSound_t shoot_type, float soundtime = 0.0f );
+	virtual void	WeaponSound( WeaponSound_t shoot_type, double soundtime = 0.0 );
 
 	DECLARE_DATADESC();
 

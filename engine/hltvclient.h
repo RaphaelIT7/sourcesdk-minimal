@@ -28,8 +28,8 @@ public:
 	void PacketEnd( void );
 
 	void FileReceived( const char *fileName, unsigned int transferID );
-	void FileRequested(const char *fileName, unsigned int transferID );
-	void FileDenied(const char *fileName, unsigned int transferID );
+	void FileRequested( RequestFile_t requestType, unsigned int requestValue, unsigned int transferID );
+	void FileDenied( unsigned int transferID );
 	void FileSent(const char *fileName, unsigned int transferID );
 	
 	bool ProcessConnectionlessPacket( netpacket_t *packet );
@@ -56,7 +56,7 @@ public: // IClientMessageHandlers
 	PROCESS_CLC_MESSAGE( FileCRCCheck );
 	PROCESS_CLC_MESSAGE( FileMD5Check ) { return true; }
 	PROCESS_CLC_MESSAGE( SaveReplay );
-	PROCESS_CLC_MESSAGE( GMod_ClientToServer ) { return true; } // Yes. Gmod completly Ignores this in hltv.
+	PROCESS_CLC_MESSAGE( GMod_ClientToServer ) { return true; } // Yes. Gmod completely Ignores this in hltv.
 
 public:
 	CClientFrame *GetDeltaFrame( int nTick );

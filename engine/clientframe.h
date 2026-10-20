@@ -16,7 +16,7 @@
 
 class CFrameSnapshot;
 
-#define MAX_CLIENT_FRAMES	128
+#define MAX_CLIENT_FRAMES	256
 
 class CClientFrame
 {
@@ -40,13 +40,18 @@ public:
 	// State of entities this frame from the POV of the client.
 	int					last_entity;	// highest entity index
 	int					tick_count;	// server tick of this snapshot
+#if GMOD_X86_64
+	CClientFrame*		m_pNext;
+#endif
 
 	// Used by server to indicate if the entity was in the player's pvs
 	CBitVec<MAX_EDICTS>	transmit_entity; // if bit n is set, entity n will be send to client
 	CBitVec<MAX_EDICTS>	*from_baseline;	// if bit n is set, this entity was send as update from baseline
 	CBitVec<MAX_EDICTS>	*transmit_always; // if bit is set, don't do PVS checks before sending (HLTV only)
 
+#if !GMOD_X86_64
 	CClientFrame*		m_pNext;
+#endif
 
 private:
 
@@ -75,8 +80,10 @@ private:
 	void			FreeFrame( CClientFrame* pFrame );
 
 	CClientFrame	*m_Frames;		// updates can be delta'ed from here
+#if !GMOD_X86_64
 	CClientFrame	*m_LastFrame;
 	int				m_nFrames;
+#endif
 	CClassMemoryPool< CClientFrame >	m_ClientFramePool;
 };
 

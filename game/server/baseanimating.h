@@ -403,12 +403,12 @@ private:
 	CNetworkVar( bool, m_bClientSideAnimation );
 	CNetworkVar( bool, m_bClientSideFrameReset );
 
-	CNetworkVar( int, m_nNewSequenceParity );
-	CNetworkVar( int, m_nResetEventsParity );
-
 	// Incremented each time the entity is told to do a muzzle flash.
 	// The client picks up the change and draws the flash.
 	CNetworkVar( unsigned char, m_nMuzzleFlashParity );
+
+	CNetworkVar( int, m_nNewSequenceParity );
+	CNetworkVar( int, m_nResetEventsParity );
 
 	CNetworkHandle( CBaseEntity, m_hLightingOrigin );
 	CNetworkHandle( CBaseEntity, m_hLightingOriginRelative );

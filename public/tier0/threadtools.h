@@ -996,13 +996,13 @@ private:
 class PLATFORM_CLASS CThreadSemaphore : public CThreadSyncObject
 {
 public:
-	CThreadSemaphore(long initialValue, long maxValue);
+	CThreadSemaphore(int initialValue, int maxValue);
 
 	//-----------------------------------------------------
 	// Increases the count of the semaphore object by a specified
 	// amount.  Wait() decreases the count by one on return.
 	//-----------------------------------------------------
-	bool Release(long releaseCount = 1, long * pPreviousCount = NULL );
+	bool Release(int releaseCount = 1, int * pPreviousCount = NULL );
 
 private:
 	CThreadSemaphore(const CThreadSemaphore &);
@@ -1245,24 +1245,11 @@ public:
 	// Set the priority
 	bool SetPriority( int );
 
-	// Request a thread to suspend, this must ONLY be called from the thread itself, not the main thread
-	// This suspend variant causes the thread in question to suspend at a known point in its execution
-	// which means you don't risk the global deadlocks/hangs potentially caused by the raw Suspend() call
-	void SuspendCooperative();
-
-	// Resume a previously suspended thread from the Cooperative call
-	void ResumeCooperative();
-
-	// wait for a thread to execute its SuspendCooperative call 
-	void BWaitForThreadSuspendCooperative();
-
-#ifndef LINUX
 	// forcefully Suspend a thread
 	unsigned int Suspend();
 
 	// forcefully Resume a previously suspended thread
 	unsigned int Resume();
-#endif
 
 	// Force hard-termination of thread.  Used for critical failures.
 	bool Terminate( int exitCode = 0 );
@@ -1304,7 +1291,7 @@ protected:
 	// override it and we don't want to change the vtable from the published SDK version.
 	void Cleanup();
 
-	bool WaitForCreateComplete( CThreadEvent *pEvent );
+	virtual bool WaitForCreateComplete( CThreadEvent *pEvent );
 
 	// "Virtual static" facility
 	typedef unsigned (__stdcall *ThreadProc_t)( void * );
@@ -1345,10 +1332,8 @@ private:
 	ThreadId_t m_threadId;
 #elif defined(POSIX)
 	pthread_t m_threadId;
-#endif
 	CInterlockedInt m_nSuspendCount;
-	CThreadEvent m_SuspendEvent;
-	CThreadEvent m_SuspendEventSignal;
+#endif
 	int		m_result;
 	char	m_szName[32];
 	void *	m_pStackBase;

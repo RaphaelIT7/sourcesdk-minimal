@@ -1670,78 +1670,7 @@ const char *SVC_PacketEntities::ToString(void) const
 	Q_snprintf(s_text, sizeof(s_text), "%s: delta %i, max %i, changed %i,%s bytes %i",
 		GetName(), m_nDeltaFrom, m_nMaxEntries, m_nUpdatedEntries, m_bUpdateBaseline?" BL update,":"", Bits2Bytes(m_nLength) );
 	return s_text;
-} 
-
-SVC_Menu::SVC_Menu( DIALOG_TYPE type, KeyValues *data ) : m_pMessageHandler{nullptr}
-{
-	m_bReliable = true;
-
-	m_Type = type;
-	m_MenuKeyValues = data->MakeCopy();
-	m_iLength = -1;
 }
-
-SVC_Menu::~SVC_Menu()
-{
-	if ( m_MenuKeyValues )
-	{
-		m_MenuKeyValues->deleteThis();
-	}
-}
-
-bool SVC_Menu::WriteToBuffer( bf_write &buffer )
-{
-	if ( !m_MenuKeyValues )
-	{
-		return false;
-	}
-
-	CUtlBuffer buf;
-	m_MenuKeyValues->WriteAsBinary( buf );
-
-	if ( buf.TellPut() > 4096 )
-	{
-		Msg( "Too much menu data (4096 bytes max)\n" );
-		return false;
-	}
-
-	buffer.WriteUBitLong( GetType(), NETMSG_TYPE_BITS );
-	buffer.WriteShort( m_Type );
-	buffer.WriteWord( buf.TellPut() );
-	buffer.WriteBytes( buf.Base(), buf.TellPut() );
-
-	return !buffer.IsOverflowed();
-}
-
-bool SVC_Menu::ReadFromBuffer( bf_read &buffer )
-{
-	VPROF( "SVC_Menu::ReadFromBuffer" );
-
-	m_Type = (DIALOG_TYPE)buffer.ReadShort();
-	m_iLength = buffer.ReadWord();
-
-	CUtlBuffer buf( 0, m_iLength );
-	buffer.ReadBytes( buf.Base(), m_iLength );
-	buf.SeekPut( CUtlBuffer::SEEK_HEAD, m_iLength );
-
-	if ( m_MenuKeyValues ) 
-	{
-		m_MenuKeyValues->deleteThis();
-	}
-	m_MenuKeyValues = new KeyValues( "menu" );
-	Assert( m_MenuKeyValues );
-	
-	m_MenuKeyValues->ReadAsBinary( buf );
-
-	return !buffer.IsOverflowed();
-}
-
-const char *SVC_Menu::ToString(void) const
-{
-	Q_snprintf(s_text, sizeof(s_text), "%s: %i \"%s\" (len:%i)", GetName(),
-		m_Type, m_MenuKeyValues ? m_MenuKeyValues->GetName() : "No KeyValues", m_iLength );
-	return s_text;
-} 
 
 bool SVC_GameEventList::WriteToBuffer( bf_write &buffer )
 {

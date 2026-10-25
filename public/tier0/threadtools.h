@@ -80,7 +80,7 @@ static const ThreadId_t INVALID_THREAD_ID = ~ThreadId_t(0);
 //
 //-----------------------------------------------------------------------------
 FORWARD_DECLARE_HANDLE( ThreadHandle_t );
-typedef unsigned (*ThreadFunc_t)( void *pParam );
+typedef uintp (*ThreadFunc_t)( void *pParam );
 
 PLATFORM_OVERLOAD ThreadHandle_t CreateSimpleThread( ThreadFunc_t, void *pParam, ThreadId_t *pID, unsigned stackSize = 0 );
 PLATFORM_INTERFACE ThreadHandle_t CreateSimpleThread( ThreadFunc_t, void *pParam, unsigned stackSize = 0 );
@@ -252,11 +252,17 @@ PLATFORM_INTERFACE bool ThreadInterlockedAssignIf128( volatile int128 *pDest, co
 
 #endif
 
+#if defined( POSIX )
+inline int64 ThreadInterlockedIncrement64( int64 volatile *p )					{ return __sync_fetch_and_add( p, 1 ) + 1; }
+inline int64 ThreadInterlockedDecrement64( int64 volatile *p )					{ return __sync_fetch_and_add( p, -1 ) - 1; }
+inline int64 ThreadInterlockedExchangeAdd64( int64 volatile *p, int64 value )	{ return __sync_fetch_and_add( p, value ); }
+#else
 PLATFORM_INTERFACE int64 ThreadInterlockedIncrement64( int64 volatile * ) NOINLINE;
 PLATFORM_INTERFACE int64 ThreadInterlockedDecrement64( int64 volatile * ) NOINLINE;
+PLATFORM_INTERFACE int64 ThreadInterlockedExchangeAdd64( int64 volatile *, int64 value ) NOINLINE;
+#endif
 PLATFORM_INTERFACE int64 ThreadInterlockedCompareExchange64( int64 volatile *, int64 value, int64 comperand ) NOINLINE;
 PLATFORM_INTERFACE int64 ThreadInterlockedExchange64( int64 volatile *, int64 value ) NOINLINE;
-PLATFORM_INTERFACE int64 ThreadInterlockedExchangeAdd64( int64 volatile *, int64 value ) NOINLINE;
 PLATFORM_INTERFACE bool ThreadInterlockedAssignIf64(volatile int64 *pDest, int64 value, int64 comperand ) NOINLINE;
 
 inline unsigned ThreadInterlockedExchangeSubtract( unsigned volatile *p, unsigned value )	{ return ThreadInterlockedExchangeAdd( (long volatile *)p, value ); }

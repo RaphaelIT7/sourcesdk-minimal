@@ -39,6 +39,7 @@ public:
 		MOVE,			// client move cmds
 		STRINGCMD,		// string command
 		SIGNON,			// various signondata
+		GMOD_NET,		// GMod net messages (SVC_GMod_ServerToClient / CLC_GMod_ClientToServer)
 		TOTAL,			// must be last and is not a real group
 	};
 	

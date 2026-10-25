@@ -161,7 +161,7 @@ public:
 	virtual void		SaveFreeMemory( void *pSaveMem ) = 0;
 	
 	// Emit an ambient sound associated with the specified entity
-	virtual void		EmitAmbientSound( int entindex, const Vector &pos, const char *samp, float vol, soundlevel_t soundlevel, int fFlags, int pitch, float delay = 0.0f ) = 0;
+	virtual void		EmitAmbientSound( int entindex, const Vector &pos, const char *samp, float vol, soundlevel_t soundlevel, int fFlags, int pitch, double delay = 0.0 ) = 0;
 
 	// Fade out the client's volume level toward silence (or fadePercent)
 	virtual void        FadeClientVolume( const edict_t *pEdict, float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds ) = 0;
@@ -214,7 +214,7 @@ public:
 	virtual void		SetView( const edict_t *pClient, const edict_t *pViewent ) = 0;
 
 	// Get a high precision timer for doing profiling work
-	virtual float		Time( void ) = 0;
+	virtual double		Time( void ) = 0;
 
 	// Set the player's crosshair angle
 	virtual void		CrosshairAngle( const edict_t *pClient, float pitch, float yaw ) = 0;
@@ -412,7 +412,7 @@ public:
 	// Server version from the steam.inf, this will be compared to the GC version
 	virtual int GetServerVersion() const = 0;
 
-	virtual float *GMOD_SetTimeManipulator( float fScaleFramerate ) = 0;
+	virtual void GMOD_SetTimeManipulator( float fScaleFramerate ) = 0;
 	virtual void GMOD_SendToClient( IRecipientFilter *filter, void *data, int dataSize ) = 0;
 	virtual void GMOD_SendToClient( int client, void *data, int dataSize ) = 0;
 	virtual void GMOD_RawServerCommand( const char *command ) = 0;
@@ -422,10 +422,10 @@ public:
 	virtual MDLHandle_t GMOD_LoadModel( const char *path ) = 0;
 	virtual float GetClientConVarFloat( int client, const char* cvar, float fallback ) = 0;
 	virtual CSteamID *GMOD_GetPlayerOwnerSteamID( const edict_t* pClient ) = 0;
-	virtual bool GMOD_GetPlayerIsSpeaking( const edict_t* pClient ) = 0;
 	virtual bool GMOD_GetPlayerIsBot( const edict_t* pClient ) = 0;
-	virtual bool GMOD_ShouldUpdateVoiceMasks() = 0;
 	virtual bool NET_IsHostLocal( const char* unknwon ) = 0;
+	virtual bool GMOD_IsEdictActuallyFree( int iEdict ) = 0;
+	virtual bool GetLightForPointListenServerOnly( const Vector &point, bool bClamp, Vector *pColor ) = 0;
 };
 
 

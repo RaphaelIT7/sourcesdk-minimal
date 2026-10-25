@@ -173,17 +173,16 @@ public:	// INetChannel interface
 	void		ProcessPacket( netpacket_t * packet, bool bHasHeader );
 
 	void		SetCompressionMode( bool bUseCompression );
-	void		SetFileTransmissionMode(bool bBackgroundMode);
+	void		SetFileTransmissionMode(bool bBackgroundMode );
 	bool		SendNetMsg( INetMessage &msg, bool bForceReliable = false, bool bVoice = false ); // send a net message
-	bool		SendData(bf_write &msg, bool bReliable = true); // send a chunk of data
-	bool		SendFile(const char *filename, unsigned int transferID); // transmit a local file
+	bool		SendData( bf_write &msg, bool bReliable = true ); // send a chunk of data
+	bool		SendFile( const char *filename, unsigned int transferID ); // transmit a local file
 	void		SetChoked( void ); // choke a packet
-	int			SendDatagram(bf_write *data); // build and send datagram packet
-	unsigned int RequestFile(RequestFile_t, unsigned int) { return 0; }; // request remote file to upload, returns request ID
-	unsigned int RequestFile(const char *filename); // request remote file to upload, returns request ID
-	void RequestFile_OLD(const char *filename, unsigned int transferID); // request remote file to upload, returns request ID
-	void		DenyFile(const char *filename, unsigned int transferID); // deny a file request
-	bool		Transmit(bool onlyReliable = false); // send data from buffers
+	int			SendDatagram( bf_write *data); // build and send datagram packet
+	unsigned int RequestFile( RequestFile_t requestType, unsigned int requestValue ); // request remote file to upload, returns request ID
+	void RequestFile_OLD( const char *filename, unsigned int transferID ); // request remote file to upload, returns request ID
+	void		DenyFile( unsigned int transferID ); // deny a file request
+	bool		Transmit( bool onlyReliable = false ); // send data from buffers
 	
 	const netadr_t	&GetRemoteAddress( void ) const;
 	INetChannelHandler *GetMsgHandler( void ) const;

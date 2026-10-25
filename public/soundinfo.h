@@ -85,7 +85,7 @@ struct SoundInfo_t
 	Vector			vListenerOrigin;
 	int				nFlags;
 	int 			nSoundNum;
-	float			fDelay;
+	double			fDelay;
 	bool			bIsSentence;
 	bool			bIsAmbient;
 	int				nSpeakerEntity;

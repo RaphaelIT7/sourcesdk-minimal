@@ -55,6 +55,7 @@ struct EmitSound_t;
 class C_RecipientFilter;
 class CTakeDamageInfo;
 class C_BaseCombatCharacter;
+class INextBot;
 class CEntityMapData;
 class ConVar;
 class CDmgAccumulator;
@@ -99,7 +100,7 @@ struct VarMapping_t
 
 	CUtlVector< VarMapEntry_t >	m_Entries;
 	int							m_nInterpolatedEntries;
-	float						m_lastInterpolationTime;
+	double						m_lastInterpolationTime;
 };
 
 																	
@@ -232,7 +233,7 @@ public:
 	void							Interp_SetupMappings( VarMapping_t *map );
 	
 	// Returns 1 if there are no more changes (ie: we could call RemoveFromInterpolationList).
-	int								Interp_Interpolate( VarMapping_t *map, float currentTime );
+	int								Interp_Interpolate( VarMapping_t *map, double currentTime );
 	
 	void							Interp_RestoreToLastNetworked( VarMapping_t *map );
 	void							Interp_UpdateInterpolationAmounts( VarMapping_t *map );
@@ -301,6 +302,7 @@ public:
 	virtual bool					UsesPowerOfTwoFrameBufferTexture();
 	virtual bool					UsesFullFrameBufferTexture();
 	virtual bool					IgnoresZBuffer( void ) const;
+	virtual void					ComputeFxBlendForView( int view );
 	virtual const model_t			*GetModel( void ) const;
 	virtual int						DrawModel( int flags );
 	virtual void					ComputeFxBlend( void );
@@ -440,9 +442,11 @@ private:
 	bool			VPhysicsInitSetup();
 public:
 
-	void			VPhysicsSetObject( IPhysicsObject *pPhysics );
+	virtual void	VPhysicsSetObject( IPhysicsObject *pPhysics );
 	// destroy and remove the physics object for this entity
 	virtual void	VPhysicsDestroyObject( void );
+	virtual bool	GMOD_VPhysicsTest( IPhysicsObject *pPhysics, bool bFlag );
+	virtual matrix3x4_t	GMOD_GetPhysBoneMatrix( int index );
 
 	// Purpose: My physics object has been updated, react or extract data
 	virtual void					VPhysicsUpdate( IPhysicsObject *pPhysics );
@@ -474,7 +478,7 @@ public:
 	vec_t							GetLocalOriginDim( int iDim ) const;		// You can use the X_INDEX, Y_INDEX, and Z_INDEX defines here.
 	void							SetLocalOriginDim( int iDim, vec_t flValue );
 
-	const QAngle&					GetLocalAngles( void ) const;
+	virtual const QAngle&			GetLocalAngles( void ) const;
 	void							SetLocalAngles( const QAngle& angles );
 	vec_t							GetLocalAnglesDim( int iDim ) const;		// You can use the X_INDEX, Y_INDEX, and Z_INDEX defines here.
 	void							SetLocalAnglesDim( int iDim, vec_t flValue );
@@ -520,7 +524,7 @@ public:
 
 	// Used when the collision prop is told to ask game code for the world-space surrounding box
 	virtual void					ComputeWorldSpaceSurroundingBox( Vector *pVecWorldMins, Vector *pVecWorldMaxs );
-	virtual float						GetHealthBarHeightOffset() const { return 0.f; }
+	float						GetHealthBarHeightOffset() const { return 0.f; }
 
 	// Returns the entity-to-world transform
 	matrix3x4_t						&EntityToWorldTransform();
@@ -588,8 +592,8 @@ public:
 	// See CSoundEmitterSystem
 	virtual void ModifyEmitSoundParams( EmitSound_t &params );
 
-	void	EmitSound( const char *soundname, float soundtime = 0.0f, float *duration = NULL );  // Override for doing the general case of CPASAttenuationFilter( this ), and EmitSound( filter, entindex(), etc. );
-	void	EmitSound( const char *soundname, HSOUNDSCRIPTHANDLE& handle, float soundtime = 0.0f, float *duration = NULL );  // Override for doing the general case of CPASAttenuationFilter( this ), and EmitSound( filter, entindex(), etc. );
+	void	EmitSound( const char *soundname, double soundtime = 0.0f, float *duration = NULL );  // Override for doing the general case of CPASAttenuationFilter( this ), and EmitSound( filter, entindex(), etc. );
+	void	EmitSound( const char *soundname, HSOUNDSCRIPTHANDLE& handle, double soundtime = 0.0f, float *duration = NULL );  // Override for doing the general case of CPASAttenuationFilter( this ), and EmitSound( filter, entindex(), etc. );
 	void	StopSound( const char *soundname );
 	void	StopSound( const char *soundname, HSOUNDSCRIPTHANDLE& handle );
 	void	GenderExpandString( char const *in, char *out, int maxlen );
@@ -599,8 +603,8 @@ public:
 	static bool	GetParametersForSound( const char *soundname, CSoundParameters &params, const char *actormodel );
 	static bool	GetParametersForSound( const char *soundname, HSOUNDSCRIPTHANDLE& handle, CSoundParameters &params, const char *actormodel );
 
-	static void EmitSound( IRecipientFilter& filter, int iEntIndex, const char *soundname, const Vector *pOrigin = NULL, float soundtime = 0.0f, float *duration = NULL );
-	static void EmitSound( IRecipientFilter& filter, int iEntIndex, const char *soundname, HSOUNDSCRIPTHANDLE& handle, const Vector *pOrigin = NULL, float soundtime = 0.0f, float *duration = NULL );
+	static void EmitSound( IRecipientFilter& filter, int iEntIndex, const char *soundname, const Vector *pOrigin = NULL, double soundtime = 0.0f, float *duration = NULL );
+	static void EmitSound( IRecipientFilter& filter, int iEntIndex, const char *soundname, HSOUNDSCRIPTHANDLE& handle, const Vector *pOrigin = NULL, double soundtime = 0.0f, float *duration = NULL );
 	static void StopSound( int iEntIndex, const char *soundname );
 	static soundlevel_t LookupSoundLevel( const char *soundname );
 	static soundlevel_t LookupSoundLevel( const char *soundname, HSOUNDSCRIPTHANDLE& handle );
@@ -610,7 +614,7 @@ public:
 
 	static void StopSound( int iEntIndex, int iChannel, const char *pSample );
 
-	static void EmitAmbientSound( int entindex, const Vector& origin, const char *soundname, int flags = 0, float soundtime = 0.0f, float *duration = NULL );
+	static void EmitAmbientSound( int entindex, const Vector& origin, const char *soundname, int flags = 0, double soundtime = 0.0f, float *duration = NULL );
 
 	// These files need to be listed in scripts/game_sounds_manifest.txt
 	static HSOUNDSCRIPTHANDLE PrecacheScriptSound( const char *soundname );
@@ -691,7 +695,7 @@ public:
 
 	virtual bool					ShouldDraw();
 	inline	bool					IsVisible() const { return m_hRender != INVALID_CLIENT_RENDER_HANDLE; }
-	virtual void					UpdateVisibility();
+	void					UpdateVisibility();
 	
 	// Returns true if the entity changes its position every frame on the server but it doesn't
 	// set animtime. In that case, the client returns true here so it copies the server time to
@@ -716,10 +720,10 @@ public:
 	virtual void					ResetLatched();
 	
 	float							GetInterpolationAmount( int flags );
-	float							GetLastChangeTime( int flags );
+	double							GetLastChangeTime( int flags );
 
 	// Interpolate the position for rendering
-	virtual bool					Interpolate( float currentTime );
+	virtual bool					Interpolate( double currentTime );
 
 	// Did the object move so far that it shouldn't interpolate?
 	bool							Teleported( void );
@@ -737,7 +741,7 @@ public:
 	virtual int						DrawBrushModel( bool bTranslucent, int nFlags, bool bTwoPass );
 
 	// returns the material animation start time
-	virtual float					GetTextureAnimationStartTime();
+	virtual double					GetTextureAnimationStartTime();
 	// Indicates that a texture animation has wrapped
 	virtual void					TextureAnimationWrapped();
 
@@ -748,8 +752,8 @@ public:
 	virtual void					SetHealth(int iHealth) {}
 	virtual int						GetHealth() const { return 0; }
 	virtual int						GetMaxHealth() const { return 1; }
-	virtual bool					IsVisibleToTargetID( void ) const { return false; }
-	virtual bool					IsHealthBarVisible( void ) const { return false; }
+	bool					IsVisibleToTargetID( void ) const { return false; }
+	bool					IsHealthBarVisible( void ) const { return false; }
 
 	// Returns the health fraction
 	float							HealthFraction() const;
@@ -777,7 +781,7 @@ public:
 	virtual void					AddDecal( const Vector& rayStart, const Vector& rayEnd,
 										const Vector& decalCenter, int hitbox, int decalIndex, bool doTrace, trace_t& tr, int maxLODToDecal = ADDDECAL_TO_ALL_LODS );
 
-	virtual void					AddColoredDecal( const Vector& rayStart, const Vector& rayEnd,
+	void					AddColoredDecal( const Vector& rayStart, const Vector& rayEnd,
 		const Vector& decalCenter, int hitbox, int decalIndex, bool doTrace, trace_t& tr, Color cColor, int maxLODToDecal = ADDDECAL_TO_ALL_LODS );
 
 	// A method to remove all decals from an entity
@@ -790,7 +794,7 @@ public:
 	float							ProxyRandomValue() const { return m_flProxyRandomValue; }
 
 	// The spawn time of this entity
-	float							SpawnTime() const { return m_flSpawnTime; }
+	double							SpawnTime() const { return m_flSpawnTime; }
 
 	virtual bool					IsClientCreated( void ) const;
 
@@ -814,6 +818,7 @@ public:
 	void							ShutdownPredictable( void );
 
 	virtual void					SetPredictable( bool state );
+	virtual void					PredictionErrorShouldResetLatchedForAllPredictables();
 	bool							GetPredictable( void ) const;
 	void							PreEntityPacketReceived( int commands_acknowledged );
 	void							PostEntityPacketReceived( void );
@@ -1015,7 +1020,7 @@ public:
 	virtual bool					IsBaseObject( void ) const { return false; }
 	virtual bool					IsBaseCombatWeapon( void ) const { return false; }
 	virtual class C_BaseCombatWeapon		*MyCombatWeaponPointer() { return NULL; }
-	virtual bool					IsCombatItem( void ) const { return false; }
+	bool					IsCombatItem( void ) const { return false; }
 
 	virtual bool					IsBaseTrain( void ) const { return false; }
 
@@ -1129,8 +1134,8 @@ public:
 
 	// Think functions with contexts
 	int		RegisterThinkContext( const char *szContext );
-	BASEPTR	ThinkSet( BASEPTR func, float flNextThinkTime = 0, const char *szContext = NULL );
-	void	SetNextThink( float nextThinkTime, const char *szContext = NULL );
+	BASEPTR	ThinkSet( BASEPTR func, double flNextThinkTime = 0, const char *szContext = NULL );
+	void	SetNextThink( double nextThinkTime, const char *szContext = NULL );
 	float	GetNextThink( const char *szContext = NULL );
 	float	GetLastThink( const char *szContext = NULL );
 	int		GetNextThinkTick( const char *szContext = NULL );
@@ -1143,11 +1148,11 @@ public:
 	bool	WillSimulateGamePhysics();
 	int		GetFirstThinkTick();	// get first tick thinking on any context
 
-	float	GetAnimTime() const;
-	void	SetAnimTime( float at );
+	double	GetAnimTime() const;
+	void	SetAnimTime( double at );
 
-	float	GetSimulationTime() const;
-	void	SetSimulationTime( float st );
+	double	GetSimulationTime() const;
+	void	SetSimulationTime( double st );
 
 	float	GetCreateTime()										{ return m_flCreateTime; }
 	void	SetCreateTime( float flCreateTime )					{ m_flCreateTime = flCreateTime; }
@@ -1204,7 +1209,7 @@ protected:
 	void MarkMessageReceived();
 
 	// Gets the last message time
-	float	GetLastMessageTime() const		{ return m_flLastMessageTime; }
+	double	GetLastMessageTime() const		{ return m_flLastMessageTime; }
 
 	// For non-players
 	int	PhysicsClipVelocity (const Vector& in, const Vector& normal, Vector& out, float overbounce );
@@ -1298,11 +1303,11 @@ private:
 
 public:
 	// Time animation sequence or frame was last changed
-	float							m_flAnimTime;
-	float							m_flOldAnimTime;
+	double							m_flAnimTime;
+	double							m_flOldAnimTime;
 
-	float							m_flSimulationTime;
-	float							m_flOldSimulationTime;
+	double							m_flSimulationTime;
+	double							m_flOldSimulationTime;
 	
 	float							m_flCreateTime;
 
@@ -1499,8 +1504,6 @@ private:
 	void HierarchySetParent( C_BaseEntity *pNewParent );
 	void UnlinkFromHierarchy();
 
-	// Computes the water level + type
-	void UpdateWaterState();
 
 	// Checks a sweep without actually performing the move
 	void PhysicsCheckSweep( const Vector& vecAbsStart, const Vector &vecAbsDelta, trace_t *pTrace );
@@ -1509,8 +1512,8 @@ private:
 	void MoveToAimEnt( );
 	
 	// Sets/Gets the next think based on context index
-	void SetNextThink( int nContextIndex, float thinkTime );
-	void SetLastThink( int nContextIndex, float thinkTime );
+	void SetNextThink( int nContextIndex, double thinkTime );
+	void SetLastThink( int nContextIndex, double thinkTime );
 	float GetNextThink( int nContextIndex ) const;
 	int	GetNextThinkTick( int nContextIndex ) const;
 
@@ -1534,10 +1537,10 @@ private:
 #endif
 
 	// The spawn time of the entity
-	float							m_flSpawnTime;
+	double							m_flSpawnTime;
 
 	// Timestamp of message arrival
-	float							m_flLastMessageTime;
+	double							m_flLastMessageTime;
 
 	// Base velocity
 	Vector							m_vecBaseVelocity;
@@ -1717,7 +1720,7 @@ public:
 	virtual const char *GetMaterialOverride();
 	virtual void StartMaterialOverride();
 	virtual void EndMaterialOverride();
-	virtual double GetCreationTime();
+	virtual float GetCreationTime();
 	virtual bool IsPredicted() const;
 	virtual bool IsWeapon() const;
 	virtual bool IsVehicle() const;
@@ -1745,6 +1748,7 @@ public:
 	virtual void Lua_OnEntityInitialized();
 	virtual bool HasLuaTable();
 	virtual void LuaEntityInitialized();
+	virtual void UpdateWaterState();
 	virtual void ForcePhysicsDropObject();
 	virtual void StartDriving( C_BasePlayer * );
 	virtual void FinishDriving( C_BasePlayer * );
@@ -1752,6 +1756,7 @@ public:
 	virtual void OnClientsideLuaRestored();
 	virtual void *Lua_GetLuaClass();
 	virtual void VPhysicsCollision( int, gamevcollisionevent_t * );
+	virtual INextBot *GetNextBot();
 };
 
 EXTERN_RECV_TABLE(DT_BaseEntity);

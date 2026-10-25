@@ -38,7 +38,7 @@ public:
 
 	// Set the next time at which you want to think. You can also use
 	// one of the CLIENT_THINK_ defines.
-	void					SetNextClientThink( ClientEntityHandle_t hEnt, float nextTime );
+	void					SetNextClientThink( ClientEntityHandle_t hEnt, double nextTime );
 	
 	// Remove an entity from the think list.
 	void					RemoveThinkable( ClientEntityHandle_t hEnt );
@@ -74,8 +74,8 @@ private:
 	struct ThinkEntry_t
 	{
 		ClientEntityHandle_t	m_hEnt;
-		float					m_flNextClientThink;
-		float					m_flLastClientThink;
+		double					m_flNextClientThink;
+		double					m_flLastClientThink;
 		int						m_nIterEnum;
 	};
 
@@ -83,7 +83,7 @@ private:
 	{
 		ClientEntityHandle_t	m_hEnt;
 		ClientThinkHandle_t		m_hThink;
-		float					m_flNextTime;
+		double					m_flNextTime;
 	};
 
 // Internal stuff.

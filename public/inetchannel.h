@@ -12,6 +12,7 @@
 
 #include "tier0/platform.h"
 #include "inetchannelinfo.h"
+#include "inetmsghandler.h"
 #include "tier1/bitbuf.h"
 
 class	IDemoRecorder;
@@ -20,7 +21,6 @@ class	INetChannelHandler;
 class	INetChannelInfo;
 typedef struct netpacket_s netpacket_t;
 typedef struct netadr_s	netadr_t;
-typedef unsigned int RequestFile_t;
 
 abstract_class INetChannel : public INetChannelInfo
 {
@@ -49,7 +49,7 @@ public:
 #endif
 	virtual bool	SendData(bf_write &msg, bool bReliable = true) = 0;
 	virtual bool	SendFile(const char *filename, unsigned int transferID) = 0;
-	virtual void	DenyFile(const char *filename, unsigned int transferID) = 0;
+	virtual void	DenyFile(unsigned int transferID) = 0;
 	virtual void	RequestFile_OLD(const char *filename, unsigned int transferID) = 0;	// get rid of this function when we version the 
 	virtual void	SetChoked( void ) = 0;
 	virtual int		SendDatagram(bf_write *data) = 0;		

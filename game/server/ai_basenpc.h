@@ -279,8 +279,8 @@ struct AIScheduleState_t
 {
 	int					 iCurTask;
 	TaskStatus_e		 fTaskStatus;
-	float				 timeStarted;
-	float				 timeCurTaskStarted;
+	double				 timeStarted;
+	double				 timeCurTaskStarted;
 	AI_TaskFailureCode_t taskFailureCode;
 	int					 iTaskInterrupt;
 	bool 				 bTaskRanAutomovement;
@@ -765,9 +765,9 @@ private:
 	bool				m_bDoPostRestoreRefindPath;
 
 	bool				m_bUsingStandardThinkTime;
-	float				m_flLastRealThinkTime;
 	int					m_iFrameBlocked;
 	bool				m_bInChoreo;
+	double				m_flLastRealThinkTime;
 
 	static int			gm_iNextThinkRebalanceTick;
 	static float		gm_flTimeLastSpawn;
@@ -1016,7 +1016,7 @@ public:
 
 	CBaseEntity*		GetEnemy()							{ return m_hEnemy.Get(); }
 	CBaseEntity*		GetEnemy() const					{ return m_hEnemy.Get(); }
-	float				GetTimeEnemyAcquired()				{ return m_flTimeEnemyAcquired; }
+	double				GetTimeEnemyAcquired()				{ return m_flTimeEnemyAcquired; }
 	void				SetEnemy( CBaseEntity *pEnemy, bool bSetCondNewEnemy = true );
 
 	const Vector &		GetEnemyLKP() const;
@@ -1074,7 +1074,7 @@ private:
 	//---------------------------------
 	
 	EHANDLE				m_hEnemy;		// the entity that the npc is fighting.
-	float				m_flTimeEnemyAcquired; // The time at which the entity the NPC is fighting became the NPC's enemy.
+	double				m_flTimeEnemyAcquired; // The time at which the entity the NPC is fighting became the NPC's enemy.
 	EHANDLE				m_hTargetEnt;	// the entity that the npc is trying to reach
 
 	CRandStopwatch		m_GiveUpOnDeadEnemyTimer;
@@ -1357,7 +1357,7 @@ public:
 	
 	void				DelayMoveStart( float delay )	{ m_flMoveWaitFinished = gpGlobals->curtime + delay; }
 	
-	float				m_flMoveWaitFinished;
+	double				m_flMoveWaitFinished;
 	
 
 	//
@@ -1385,7 +1385,7 @@ private:
 
 	EHANDLE				m_hGoalEnt;					// path corner we are heading towards
 
-	float				m_flTimeLastMovement;
+	double				m_flTimeLastMovement;
 
 
 	CSimpleSimTimer		m_CheckOnGroundTimer;
@@ -1430,7 +1430,7 @@ public:
 
 protected:
 	Vector				m_vDefaultEyeOffset;
-	float				m_flNextEyeLookTime;	// Next time a pick a new place to look
+	double				m_flNextEyeLookTime;	// Next time a pick a new place to look
 	
 	float				m_flEyeIntegRate;		 // How fast does eye move to target
 
@@ -1581,7 +1581,7 @@ protected:
 	double				m_flLastSawPlayerTime;		// Last time I saw the player
 	double				m_flLastAttackTime;			// Last time that I attacked my current enemy
 	double				m_flLastEnemyTime;
-	double				m_flNextWeaponSearchTime;	// next time to search for a better weapon
+	float				m_flNextWeaponSearchTime;	// next time to search for a better weapon
 	string_t			m_iszPendingWeapon;			// THe NPC should create and equip this weapon.
 	bool				m_bIgnoreUnseenEnemies;
 
@@ -1844,7 +1844,7 @@ public:
 	void			SetHintNode( CAI_Hint *pHintNode );
 	void			ClearHintNode( float reuseDelay = 0.0 );
 
-	float				m_flWaitFinished;			// if we're told to wait, this is the time that the wait will be over.
+	double				m_flWaitFinished;			// if we're told to wait, this is the time that the wait will be over.
 
 	float				m_flNextFlinchTime;			// Time at which we'll flinch fully again (as opposed to just doing gesture flinches)
 	float				m_flNextDodgeTime;			// Time at which I can dodge again. Used so that the behavior doesn't happen over and over.

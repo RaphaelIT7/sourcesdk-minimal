@@ -170,6 +170,8 @@ public:
 	virtual void	RecordToolMessage() = 0;
 
 	virtual bool	IgnoresZBuffer( void ) const = 0;
+
+	virtual void	ComputeFxBlendForView( int view ) = 0;
 };
 
 
@@ -259,6 +261,7 @@ public:
 
 	virtual void RecordToolMessage() {}
 	virtual bool IgnoresZBuffer( void ) const { return false; }
+	virtual void ComputeFxBlendForView( int view ) {}
 
 // IClientUnknown implementation.
 public:

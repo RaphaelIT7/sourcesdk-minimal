@@ -746,7 +746,7 @@ typedef void * HINSTANCE;
 #define _wtoi(arg) wcstol(arg, NULL, 10)
 #define _wtoi64(arg) wcstoll(arg, NULL, 10)
 
-typedef uint32 HMODULE;
+typedef uintp HMODULE;
 typedef void *HANDLE;
 #endif
 
@@ -995,12 +995,12 @@ inline T QWordSwapC( T dw )
 // The typically used methods.
 //-------------------------------------
 
-#if defined(__i386__) && !defined(VALVE_LITTLE_ENDIAN)
-#define VALVE_LITTLE_ENDIAN 1
-#endif
-
 #if defined( _SGI_SOURCE ) || defined( _X360 )
 #define	VALVE_BIG_ENDIAN 1
+#endif
+
+#if !defined(VALVE_LITTLE_ENDIAN) && !defined(VALVE_BIG_ENDIAN)
+#define VALVE_LITTLE_ENDIAN 1
 #endif
 
 // If a swapped float passes through the fpu, the bytes may get changed.
@@ -1086,16 +1086,26 @@ FORCEINLINE void StoreLittleDWord( unsigned long *base, unsigned int dwordIndex,
 			__storewordbytereverse( dword, dwordIndex<<2, base );
 		}
 #else
-FORCEINLINE unsigned long LoadLittleDWord( const unsigned long *base, unsigned int dwordIndex )
+FORCEINLINE uint32 LoadLittleDWord( const uint32 *base, unsigned int dwordIndex )
 	{
 		return LittleDWord( base[dwordIndex] );
 	}
 
-FORCEINLINE void StoreLittleDWord( unsigned long *base, unsigned int dwordIndex, unsigned long dword )
+FORCEINLINE void StoreLittleDWord( uint32 *base, unsigned int dwordIndex, uint32 dword )
 	{
 		base[dwordIndex] = LittleDWord(dword);
 	}
 #endif
+
+inline uint64 CastPtrToUint64( const void* p )
+{
+	return (uint64) ( (uintp) p );
+}
+
+inline int64 CastPtrToInt64( const void* p )
+{
+	return (int64) ( (uintp) p );
+}
 
 
 //-----------------------------------------------------------------------------

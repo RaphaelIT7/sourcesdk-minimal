@@ -248,7 +248,11 @@ typedef __int128_t int128;
 #define int128_zero() 0
 #endif
 
+#if defined( POSIX )
+inline bool ThreadInterlockedAssignIf128( volatile int128 *pDest, const int128 &value, const int128 &comperand )	{ return __sync_bool_compare_and_swap( pDest, comperand, value ); }
+#else
 PLATFORM_INTERFACE bool ThreadInterlockedAssignIf128( volatile int128 *pDest, const int128 &value, const int128 &comperand ) NOINLINE;
+#endif
 
 #endif
 
@@ -463,7 +467,7 @@ template <typename T>
 class CInterlockedIntT
 {
 public:
-	CInterlockedIntT() : m_value( 0 ) 				{ COMPILE_TIME_ASSERT( sizeof(T) == sizeof(long) ); }
+	CInterlockedIntT() : m_value( 0 ) 				{ COMPILE_TIME_ASSERT( sizeof(T) == sizeof(uint32_t) ); }
 	CInterlockedIntT( T value ) : m_value( value ) 	{}
 
 	T GetRaw() const				{ return m_value; }

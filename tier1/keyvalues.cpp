@@ -1323,8 +1323,9 @@ uint64 KeyValues::GetUint64( const char *keyName, uint64 defaultValue )
 			return (int)dat->m_flValue;
 		case TYPE_UINT64:
 			return *((uint64 *)dat->m_sValue);
-		case TYPE_INT:
 		case TYPE_PTR:
+			return (uint64)(uintp)dat->m_pValue;
+		case TYPE_INT:
 		default:
 			return dat->m_iValue;
 		};
@@ -1410,7 +1411,7 @@ const char *KeyValues::GetString( const char *keyName, const char *defaultValue 
 			SetString( keyName, buf );
 			break;
 		case TYPE_PTR:
-			Q_snprintf( buf, sizeof( buf ), "%lld", (int64)(size_t)dat->m_pValue );
+			Q_snprintf( buf, sizeof( buf ), "%lld", CastPtrToInt64( dat->m_pValue ) );
 			SetString( keyName, buf );
 			break;
 		case TYPE_INT:
@@ -2654,7 +2655,17 @@ bool KeyValues::WriteAsBinary( CUtlBuffer &buffer )
 			}
 		case TYPE_PTR:
 			{
-				buffer.PutUnsignedInt( (int)dat->m_pValue );
+#if defined( PLATFORM_64BITS )
+				// We only put an int here, because 32-bit clients do not expect 64 bits. It'll cause them to read the wrong
+				// amount of data and then crash. Longer term, we may bump this up in size on all platforms, but short term 
+				// we don't really have much of a choice other than sticking in something that appears to not be NULL.
+				if ( dat->m_pValue != 0 && ( ( (int)(intp)dat->m_pValue ) == 0 ) )
+					buffer.PutInt( 31337 ); // Put not 0, but not a valid number. Yuck.
+				else
+					buffer.PutInt( ( (int)(intp)dat->m_pValue ) );
+#else
+				buffer.PutPtr( dat->m_pValue );
+#endif
 			}
 
 		default:
@@ -2758,7 +2769,14 @@ bool KeyValues::ReadAsBinary( CUtlBuffer &buffer, int nStackDepth )
 			}
 		case TYPE_PTR:
 			{
-				dat->m_pValue = (void*)buffer.GetUnsignedInt();
+#if defined( PLATFORM_64BITS )
+				// We need to ensure we only read 32 bits out of the stream because 32 bit clients only wrote 
+				// 32 bits of data there. The actual pointer is irrelevant, all that we really care about here
+				// contractually is whether the pointer is zero or not zero.
+				dat->m_pValue = ( void* )( intp )buffer.GetInt();
+#else
+				dat->m_pValue = buffer.GetPtr();
+#endif
 			}
 
 		default:

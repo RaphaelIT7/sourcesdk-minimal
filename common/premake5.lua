@@ -40,7 +40,13 @@ function IncludeSDKCommon()
 			"invalid-offsetof"
 		})
 		defines({"COMPILER_GCC", "POSIX", "_POSIX", "LINUX", "_LINUX", "GNUC", "NO_MALLOC_OVERRIDE"})
+
+	filter({"system:linux", "platforms:x86"})
 		libdirs(current_dir .. "/../lib/public/linux32")
+
+	filter({"system:linux", "platforms:x86_64"})
+		libdirs(current_dir .. "/../lib/public/linux64")
+		buildoptions("-mcx16")
 
 	filter("system:macosx")
 		disablewarnings({

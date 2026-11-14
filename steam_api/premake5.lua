@@ -8,6 +8,9 @@ function IncludeSteamAPI()
 	filter({"platforms:x86"})
 		links("steam_api")
 
-	filter({"platforms:x86_64"})
+	filter({"system:windows", "platforms:x86_64"})
 		links("steam_api64")
+
+	filter({"system:linux", "platforms:x86_64"})
+		links("steam_api")
 end

@@ -33,8 +33,11 @@ group("SourceSDK")
 			libdirs("../lib/public")
 
 		filter({"system:windows", "platforms:x86_64"})
-			defines({"COMPILER_MSVC64", "PLATFORM_64BITS", "WIN64"})
+			defines({"COMPILER_MSVC64", "WIN64"})
 			libdirs("../lib/public/x64")
+
+		filter({"platforms:x86_64"})
+			defines("PLATFORM_64BITS")
 
 		filter({"architecture:x86_64", "system:linux"})
 			libdirs("../lib/public/linux64")

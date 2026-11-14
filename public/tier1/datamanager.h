@@ -250,7 +250,7 @@ private:
 
 inline unsigned short CDataManagerBase::FromHandle( memhandle_t handle )
 {
-	unsigned int fullWord = (unsigned int)handle;
+	unsigned int fullWord = (unsigned int)reinterpret_cast<uintp>( handle );
 	unsigned short serial = fullWord>>16;
 	unsigned short index = fullWord & 0xFFFF;
 	index--;

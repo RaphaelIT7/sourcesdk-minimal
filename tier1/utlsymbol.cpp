@@ -356,7 +356,10 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindOrAddFileName( const char *pFileNa
 	//handle.file = m_StringPool.ReferenceStringHandle( filename );
 	m_lock.UnlockWrite();
 
-	return *( FileNameHandle_t * )( &handle );
+	// The handle is 4 bytes, FileNameHandle_t is pointer sized. Zero the rest
+	FileNameHandle_t hOut = NULL;
+	memcpy( &hOut, &handle, sizeof( handle ) );
+	return hOut;
 }
 
 FileNameHandle_t CUtlFilenameSymbolTable::FindFileName( const char *pFileName )
@@ -394,7 +397,10 @@ FileNameHandle_t CUtlFilenameSymbolTable::FindFileName( const char *pFileName )
 	if ( handle.path == 0 || handle.file == 0 )
 		return NULL;
 
-	return *( FileNameHandle_t * )( &handle );
+	// The handle is 4 bytes, FileNameHandle_t is pointer sized. Zero the rest
+	FileNameHandle_t hOut = NULL;
+	memcpy( &hOut, &handle, sizeof( handle ) );
+	return hOut;
 }
 
 //-----------------------------------------------------------------------------

@@ -70,7 +70,11 @@ struct PVSInfo_t
 
 	// For dynamic "area portals"
 	short		m_nAreaNum;
-	short		m_nAreaNum2;
+
+	// GMod extented it to allow up to 4 extra areas
+	// short		m_nAreaNum2;
+	short		m_nExtraAreaCount;
+	short		m_nExtraAreas[4];
 
 	// current position
 	float		m_vCenter[3];

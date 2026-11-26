@@ -1,8 +1,6 @@
 #pragma once
 
-#include "igameevents.h"
-
-abstract_class IGarrysMod : public IGameEventListener2
+abstract_class IGarrysMod
 {
 public:
 	virtual void MenuThink() = 0;

@@ -90,7 +90,7 @@ PLATFORM_INTERFACE bool ReleaseThreadHandle( ThreadHandle_t );
 //-----------------------------------------------------------------------------
 
 PLATFORM_INTERFACE void ThreadSleep(unsigned duration = 0);
-PLATFORM_INTERFACE uint ThreadGetCurrentId();
+PLATFORM_INTERFACE ThreadId_t ThreadGetCurrentId();
 PLATFORM_INTERFACE ThreadHandle_t ThreadGetCurrentHandle();
 PLATFORM_INTERFACE int ThreadGetPriority( ThreadHandle_t hThread = NULL );
 PLATFORM_INTERFACE bool ThreadSetPriority( ThreadHandle_t hThread, int priority );
@@ -735,7 +735,7 @@ public:
 		if ( !TryLockInline( threadId ) )
 		{
 			ThreadPause();
-			Lock( (uint32)threadId, nSpinSleepTime );
+			Lock( threadId, nSpinSleepTime );
 		}
 #ifdef _DEBUG
 		if ( m_ownerID != ThreadGetCurrentId() )

@@ -131,6 +131,7 @@ private:
 
 	CHandle< CSprite >					m_hHazardLights[NUM_HAZARD_LIGHTS];
 	float								m_flNextWaterSound;
+	bool	m_bNoHazardLights;
 
 	bool	m_bRadarEnabled;
 	bool	m_bRadarDetectsEnemies;

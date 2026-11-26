@@ -1,4 +1,5 @@
 #include "filters.h"
+#include "gmod/scriptedentity.h"
 
 class CSENT_filter : public CBaseFilter
 {
@@ -24,4 +25,6 @@ public:
 
 	virtual void ScriptThink();
 	virtual void ClientThink();
+
+	CNetworkVarEmbedded( CScriptedEntity, m_ScriptedEntity );
 };

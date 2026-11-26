@@ -177,17 +177,17 @@ private:
 	CNetworkVar( DoorState_t, m_eDoorState );	// Holds whether the door is open, closed, opening, or closing.
 
 	locksound_t m_ls;			// The sounds the door plays when being locked, unlocked, etc.
-	EHANDLE		m_hActivator;		
-	
-	CNetworkVar( bool, m_bLocked );				// True if the door is locked.
+	EHANDLE		m_hActivator;
+
 	EHANDLE	m_hBlocker;				// Entity blocking the door currently
 	bool	m_bFirstBlocked;		// Marker for being the first door (in a group) to be blocked (needed for motion control)
-
+	CNetworkVar( bool, m_bLocked );				// True if the door is locked.
 	bool m_bForceClosed;			// True if this door must close no matter what.
 
 	string_t m_SoundMoving;
 	string_t m_SoundOpen;
 	string_t m_SoundClose;
+	int m_iSurfacePropIndex;
 
 	// dvs: FIXME: can we remove m_flSpeed from CBaseEntity?
 	//float m_flSpeed;			// Rotation speed when opening or closing in degrees per second.

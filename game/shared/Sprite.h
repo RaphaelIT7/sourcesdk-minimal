@@ -263,7 +263,7 @@ private:
 	CNetworkVar( float, m_flGlowProxySize );
 	CNetworkVar( float, m_flHDRColorScale );
 
-	float		m_flLastTime;
+	double		m_flLastTime;
 	float		m_flMaxFrame;
 
 	float		m_flStartScale;

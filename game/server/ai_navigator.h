@@ -29,7 +29,7 @@ class CAI_WaypointList;
 class CAI_Network;
 struct AIMoveTrace_t;
 struct AILocalMoveGoal_t;
-typedef int AI_TaskFailureCode_t;
+typedef intp AI_TaskFailureCode_t;
 
 //-----------------------------------------------------------------------------
 // Debugging tools
@@ -593,7 +593,7 @@ private:
 	CAI_Path*			m_pPath;									// My current route
 
 	CAI_WaypointList *	m_pClippedWaypoints;
-	float				m_flTimeClipped;
+	double				m_flTimeClipped;
 	Activity			m_PreviousMoveActivity;
 	Activity			m_PreviousArrivalActivity;
 

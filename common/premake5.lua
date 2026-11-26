@@ -5,7 +5,7 @@ function IncludeSDKCommon()
 
 	local _project = project()
 
-	defines({_project.serverside and "GAME_DLL" or "CLIENT_DLL", "RAD_TELEMETRY_DISABLED", "GMOD_USE_SOURCESDK"})
+	defines({_project.serverside and "GAME_DLL" or "CLIENT_DLL", "RAD_TELEMETRY_DISABLED", "GMOD_USE_SOURCESDK", "HL2_EPISODIC"})
 	externalincludedirs({
 		current_dir,
 		current_dir .. "/../game/shared",

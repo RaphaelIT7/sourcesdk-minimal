@@ -170,7 +170,6 @@ public:
 
 public:
 	string_t		m_iszVehicleName;
-	IServerVehicle	*m_pVehicleInterface;
 	EHANDLE			m_hVehicleEntity;
 
 	// Path driving

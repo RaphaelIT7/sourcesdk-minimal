@@ -128,8 +128,8 @@ protected:
 	float			m_flDangerSoundTime;
 	int				m_nBulletType;
 	bool			m_bCannonCharging;
-	float			m_flCannonTime;
-	float			m_flCannonChargeStartTime;
+	double			m_flCannonTime;
+	double			m_flCannonChargeStartTime;
 	Vector			m_vecGunOrigin;
 	CSoundPatch		*m_sndCannonCharge;
 	int				m_nSpinPos;

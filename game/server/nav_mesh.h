@@ -263,7 +263,7 @@ public:
 	
 	virtual void PreLoadAreas( int nAreas ) {}
 	virtual CNavArea *CreateArea( void ) const;							// CNavArea factory
-	virtual void DestroyArea( CNavArea * ) const;
+	virtual void DestroyArea( CNavArea * );
 	virtual HidingSpot *CreateHidingSpot( void ) const;					// Hiding Spot factory
 
 	virtual void Reset( void );											// destroy Navigation Mesh data and revert to initial state
@@ -1153,6 +1153,7 @@ private:
 
 	virtual void BeginCustomAnalysis( bool bIncremental ) {}
 	virtual void EndCustomAnalysis() {}
+	virtual void DestroyLadder( CNavLadder *pLadder );
 
 	CNavNode *m_currentNode;									// the current node we are sampling from
 	NavDirType m_generationDir;
@@ -1251,6 +1252,9 @@ private:
 
 	void TestAllAreasForBlockedStatus( void );					// Used to update blocked areas after a round restart. Need to delay so the map logic has all fired.
 	CountdownTimer m_updateBlockedAreasTimer;			
+
+	NavAreaVector m_destroyedAreas;
+	NavLadderVector m_destroyedLadders;
 };
 
 // the global singleton interface
@@ -1291,7 +1295,7 @@ inline CNavArea *CNavMesh::CreateArea( void ) const
 }
 
 //--------------------------------------------------------------------------------------------------------------
-inline void CNavMesh::DestroyArea( CNavArea *pArea ) const
+inline void CNavMesh::DestroyArea( CNavArea *pArea )
 {
 	delete pArea;
 }

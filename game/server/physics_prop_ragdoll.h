@@ -13,6 +13,7 @@
 #include "ragdoll_shared.h"
 #include "player_pickup.h"
 
+class CBoneController;
 
 //-----------------------------------------------------------------------------
 // Purpose: entity class for simple ragdoll physics
@@ -82,6 +83,7 @@ public:
  	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 	virtual AngularImpulse	PhysGunLaunchAngularImpulse();
+	virtual void SetBuildRagdollFunction( GarrysMod::Lua::CLuaObject *pFunction );
 	bool HasPhysgunInteraction( const char *pszKeyName, const char *pszValue );
 	void HandleFirstCollisionInteractions( int index, gamevcollisionevent_t *pEvent );
 
@@ -147,6 +149,10 @@ private:
 	
 	Vector				m_ragdollMins[RAGDOLL_MAX_ELEMENTS];
 	Vector				m_ragdollMaxs[RAGDOLL_MAX_ELEMENTS];
+
+	CBoneController		*m_pBoneControllers[RAGDOLL_MAX_ELEMENTS];
+	GarrysMod::Lua::CLuaObject	m_BuildRagdollFunction;
+	int					m_nUnused;
 };
 
 CBaseEntity *CreateServerRagdoll( CBaseAnimating *pAnimating, int forceBone, const CTakeDamageInfo &info, int collisionGroup, bool bUseLRURetirement = false );

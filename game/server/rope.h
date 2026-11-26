@@ -89,6 +89,7 @@ public:
 	void InputSetScrollSpeed( inputdata_t &inputdata );
 	void InputSetForce( inputdata_t &inputdata );
 	void InputBreak( inputdata_t &inputdata );
+	void InputSetLength( inputdata_t &inputdata );
 
 public:
 
@@ -171,6 +172,10 @@ private:
 	CNetworkHandle( CBaseEntity, m_hEndPoint );
 	CNetworkVar( short, m_iStartAttachment );	// StartAttachment/EndAttachment are attachment points.
 	CNetworkVar( short, m_iEndAttachment );
+	CNetworkVar( short, m_iEndBone );
+	CNetworkVar( short, m_iStartBone );
+	CNetworkVector( m_vecStartOffset );
+	CNetworkVector( m_vecEndOffset );
 };
 
 

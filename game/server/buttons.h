@@ -6,6 +6,8 @@
 
 #ifndef BUTTONS_H
 #define BUTTONS_H
+
+#include "locksounds.h"
 #ifdef _WIN32
 #pragma once
 #endif
@@ -85,6 +87,7 @@ protected:
 	COutputEvent m_OnOut;
 
 	int		m_nState;
+	CNetworkVar( float, m_flMinUseAngle );
 };
 
 

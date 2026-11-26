@@ -1,9 +1,10 @@
 #include "baseentity.h"
+#include "gmod/scriptedentity.h"
 
-class CSENT_point : public CBaseEntity
+class CSENT_point : public CPointEntity
 {
 public:
-	DECLARE_CLASS( CSENT_point, CBaseEntity );
+	DECLARE_CLASS( CSENT_point, CPointEntity );
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
@@ -23,4 +24,6 @@ public:
 
 	virtual void ScriptThink();
 	virtual void ClientThink();
+
+	CNetworkVarEmbedded( CScriptedEntity, m_ScriptedEntity );
 };

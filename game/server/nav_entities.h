@@ -12,6 +12,9 @@
 #ifndef NAV_ENTITIES_H
 #define NAV_ENTITIES_H
 
+#include "tier1/fmtstr.h"
+#include "nav_area.h"
+
 //-----------------------------------------------------------------------------------------------------
 /**
   * An entity that modifies pathfinding cost to all areas it overlaps, to allow map designers

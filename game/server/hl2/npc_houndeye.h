@@ -54,16 +54,13 @@ public:
 	bool			IsAnyoneInSquadAttacking( void );
 	void			SpeakSentence( int sentenceType );
 
-	double			m_flNextSecondaryAttack;
-	bool			m_bLoopClockwise;
-
-	CEnergyWave*	m_pEnergyWave;
-	float			m_flEndEnergyWaveTime;
+	int			m_iSpriteTexture;
 
 	bool			m_fAsleep;// some houndeyes sleep in idle mode if this is set, the houndeye is lying down
 	bool			m_fDontBlink;// don't try to open/close eye if this bit is set!
 
 	DEFINE_CUSTOM_AI;
+	Vector			m_vecPackCenter;
 	
 	DECLARE_DATADESC();
 };

@@ -53,6 +53,16 @@ public:
 	virtual void CreateStandardEntities();
 	virtual bool ShouldBurningPropsEmitLight();
 	virtual void CleanUpMap();
+	virtual bool IsAlyxInDarknessMode();
+
+private:
+
+	CNetworkVar( float, m_fTimeScale );
+	CNetworkVar( int, m_iSkillLevel );
+	CUtlVector<EHANDLE> m_hUnused;
+	int m_iLastSkillConVarValue;
+	float m_flLastHealthDropTime;
+	float m_flLastGrenadeDropTime;
 };
 
 inline CGMODRules* GMODGameRules()

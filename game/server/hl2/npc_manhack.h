@@ -254,6 +254,7 @@ private:
 	CSprite			*m_pLightGlow;
 	
 	CHandle<SmokeTrail>	m_hSmokeTrail;
+	CHandle<CBasePlayer>	m_hPhysGunOwner;
 
 	int				m_iPanel1;
 	int				m_iPanel2;

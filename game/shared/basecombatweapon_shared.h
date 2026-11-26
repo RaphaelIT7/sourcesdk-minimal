@@ -216,6 +216,7 @@ public:
 	virtual void			GiveTo( CBaseEntity *pOther );
 
 	// HUD Hints
+#if defined( CLIENT_DLL )
 	virtual bool			ShouldDisplayAltFireHUDHint();
 	virtual void			DisplayAltFireHudHint();	
 	virtual void			RescindAltFireHudHint(); ///< undisplay the hud hint and pretend it never showed.
@@ -223,6 +224,7 @@ public:
 	virtual bool			ShouldDisplayReloadHUDHint();
 	virtual void			DisplayReloadHudHint();
 	virtual void			RescindReloadHudHint();
+#endif
 
 	// Weapon client handling
 	virtual void			SetViewModelIndex( int index = 0 );
@@ -301,7 +303,9 @@ public:
 	virtual float			GetDefaultAnimSpeed( void ) { return 1.0; }
 
 	// Bullet launch information
+#if defined( CLIENT_DLL )
 	virtual int				GetBulletType( void );
+#endif
 	virtual const Vector&	GetBulletSpread( void );
 	virtual Vector			GetBulletSpread( WeaponProficiency_t proficiency )		{ return GetBulletSpread(); }
 	virtual float			GetSpreadBias( WeaponProficiency_t proficiency )			{ return 1.0; }
@@ -316,8 +320,10 @@ public:
 	virtual const WeaponProficiencyInfo_t *GetProficiencyValues();
 
 	// Autoaim
+#if defined( CLIENT_DLL )
 	virtual float			GetMaxAutoAimDeflection() { return 0.99f; }
 	virtual float			WeaponAutoAimScale() { return 1.0f; } // allows a weapon to influence the perceived size of the target's autoaim radius.
+#endif
 
 	// TF Sprinting functions
 	virtual bool			StartSprinting( void ) { return false; };
@@ -342,10 +348,12 @@ public:
 	virtual float			CalcViewmodelBob( void ) { return 0.0f; };
 
 	// Returns information about the various control panels
+#if defined( CLIENT_DLL )
 	virtual void 			GetControlPanelInfo( int nPanelIndex, const char *&pPanelName );
 	virtual void			GetControlPanelClassName( int nPanelIndex, const char *&pPanelName );
 
 	virtual bool			ShouldShowControlPanels( void ) { return true; }
+#endif
 
 	void					Lock( float lockTime, CBaseEntity *pLocker );
 	bool					IsLocked( CBaseEntity *pAsker );
@@ -361,7 +369,9 @@ public:
 	const FileWeaponInfo_t	&GetWpnData( void ) const;
 	virtual const char		*GetViewModel( int viewmodelindex = 0 ) const;
 	virtual const char		*GetWorldModel( void ) const;
+#if defined( CLIENT_DLL )
 	virtual const char		*GetAnimPrefix( void ) const;
+#endif
 	virtual int				GetMaxClip1( void ) const;
 	virtual int				GetMaxClip2( void ) const;
 	virtual int				GetDefaultClip1( void ) const;
@@ -380,7 +390,7 @@ public:
 	virtual bool			UsesClipsForAmmo1( void ) const;
 	virtual bool			UsesClipsForAmmo2( void ) const;
 	bool					IsMeleeWeapon() const;
-	virtual char const 		*GetHoldType();
+	virtual char const 		*GetHoldType() const;
 	virtual char const 		*SetHoldType( char const* );
 
 	// derive this function if you mod uses encrypted weapon info files
@@ -400,6 +410,7 @@ public:
 	int GetSecondaryAmmoCount() { return m_iSecondaryAmmoCount; }
 	void SetSecondaryAmmoCount( int count ) { m_iSecondaryAmmoCount = count; }
 
+#if defined( CLIENT_DLL )
 	virtual CHudTexture const	*GetSpriteActive( void ) const;
 	virtual CHudTexture const	*GetSpriteInactive( void ) const;
 	virtual CHudTexture const	*GetSpriteAmmo( void ) const;
@@ -408,6 +419,7 @@ public:
 	virtual CHudTexture const	*GetSpriteAutoaim( void ) const;
 	virtual CHudTexture const	*GetSpriteZoomedCrosshair( void ) const;
 	virtual CHudTexture const	*GetSpriteZoomedAutoaim( void ) const;
+#endif
 
 	virtual Activity		ActivityOverride( Activity baseAct, bool *pRequired );
 	virtual	acttable_t*		ActivityList( int &iActivityCount ) { return NULL; }
@@ -547,24 +559,27 @@ public:
 
 	virtual void			HideThink( void );
 	virtual bool			CanReload( void );
+	virtual void			RenderScreen( void );
 
 	// Gmod functions
 	virtual float  			GetPlayerDamage( void );
 	virtual void 			EquipAmmo( CBaseEntity* );
 	virtual bool 			ShouldDropOnDie( void );
 	virtual bool 			ShouldDrawViewModel( void );
-	virtual float 			GetLastShootTime( void );
-	virtual void 			UpdateLastShootTime( float );
+	virtual double 			GetLastShootTime( void );
+	virtual void 			UpdateLastShootTime( double );
 	virtual float 			GetFOV( float );
 	virtual void 			ForcePlayerPickup( CBaseEntity* );
 	virtual void 			OnRangeAttack1( void );
 	virtual void 			GModNPCAttackHack( void );
 	virtual bool 			WasDropped( void );
 	virtual void 			MarkAsDropped( void );
+	virtual Activity		GetHolsterActivity( void );
 
 private:
 	typedef CHandle< CBaseCombatCharacter > CBaseCombatCharacterHandle;
 	CNetworkVar( CBaseCombatCharacterHandle, m_hOwner );				// Player carrying this weapon
+	WEAPON_FILE_INFO_HANDLE	m_hWeaponFileInfo;
 
 protected:
 #if defined ( TF_CLIENT_DLL ) || defined ( TF_DLL )
@@ -587,16 +602,20 @@ public:
 	CNetworkVar( double, m_flNextPrimaryAttack );						// soonest time ItemPostFrame will call PrimaryAttack
 	CNetworkVar( double, m_flNextSecondaryAttack );					// soonest time ItemPostFrame will call SecondaryAttack
 	CNetworkVar( double, m_flTimeWeaponIdle );							// soonest time ItemPostFrame will call WeaponIdle
-	// Weapon state
-	bool					m_bInReload;			// Are we in the middle of a reload;
-	bool					m_bFireOnEmpty;			// True when the gun is empty and the player is still holding down the attack key(s)
-	bool					m_bFiringWholeClip;		// Are we in the middle of firing the whole clip;
 	// Weapon art
 	CNetworkVar( int, m_iViewModelIndex );
 	CNetworkVar( int, m_iWorldModelIndex );
 	// Sounds
 	float					m_flNextEmptySoundTime;				// delay on empty sound playing
+	// Weapon state
+	bool					m_bInReload;			// Are we in the middle of a reload;
+	bool					m_bFireOnEmpty;			// True when the gun is empty and the player is still holding down the attack key(s)
+	bool					m_bFiringWholeClip;		// Are we in the middle of firing the whole clip;
 
+private:
+	bool					m_bRemoveable;
+
+public:
 	Activity				GetIdealActivity( void ) { return m_IdealActivity; }
 	int						GetIdealSequence( void ) { return m_nIdealSequence; }
 
@@ -607,8 +626,6 @@ private:
 	Activity				m_Activity;
 	int						m_nIdealSequence;
 	Activity				m_IdealActivity;
-
-	bool					m_bRemoveable;
 
 	int						m_iPrimaryAmmoCount;
 	int						m_iSecondaryAmmoCount;
@@ -629,34 +646,25 @@ public:
 	CNetworkVar( int, m_iSecondaryAmmoType );	// "secondary" ammo index into the ammo info array
 	CNetworkVar( int, m_iClip1 );				// number of shots left in the primary weapon clip, -1 it not used
 	CNetworkVar( int, m_iClip2 );				// number of shots left in the secondary weapon clip, -1 it not used
+	CNetworkVar( bool, m_bFlipViewModel );
 	bool					m_bFiresUnderwater;		// true if this weapon can fire underwater
 	bool					m_bAltFiresUnderwater;		// true if this weapon can fire underwater
+	bool					m_bReloadsSingly;		// True if this weapon reloads 1 round at a time
 	float					m_fMinRange1;			// What's the closest this weapon can be used?
 	float					m_fMinRange2;			// What's the closest this weapon can be used?
 	float					m_fMaxRange1;			// What's the furthest this weapon can be used?
 	float					m_fMaxRange2;			// What's the furthest this weapon can be used?
-	bool					m_bReloadsSingly;		// True if this weapon reloads 1 round at a time
 	float					m_fFireDuration;		// The amount of time that the weapon has sustained firing
 	int						m_iSubType;
 
 	float					m_flUnlockTime;
 	EHANDLE					m_hLocker;				// Who locked this weapon.
 
-	CNetworkVar( bool, m_bFlipViewModel );
-
 	IPhysicsConstraint		*GetConstraint() { return m_pConstraint; }
 
 private:
-	WEAPON_FILE_INFO_HANDLE	m_hWeaponFileInfo;
 	IPhysicsConstraint		*m_pConstraint;
 
-	int						m_iAltFireHudHintCount;		// How many times has this weapon displayed its alt-fire HUD hint?
-	int						m_iReloadHudHintCount;		// How many times has this weapon displayed its reload HUD hint?
-	bool					m_bAltFireHudHintDisplayed;	// Have we displayed an alt-fire HUD hint since this weapon was deployed?
-	bool					m_bReloadHudHintDisplayed;	// Have we displayed a reload HUD hint since this weapon was deployed?
-	float					m_flHudHintPollTime;	// When to poll the weapon again for whether it should display a hud hint.
-	float					m_flHudHintMinDisplayTime; // if the hint is squelched before this, reset my counter so we'll display it again.
-	
 	// Server only
 #if !defined( CLIENT_DLL )
 
@@ -665,7 +673,11 @@ protected:
 	COutputEvent			m_OnPlayerUse;		// Fired when the player uses the weapon.
 	COutputEvent			m_OnPlayerPickup;	// Fired when the player picks up the weapon.
 	COutputEvent			m_OnNPCPickup;		// Fired when an NPC picks up the weapon.
-	COutputEvent			m_OnCacheInteraction;	// For awarding lambda cache achievements in HL2 on 360. See .FGD file for details 
+	COutputEvent			m_OnCacheInteraction;	// For awarding lambda cache achievements in HL2 on 360. See .FGD file for details
+
+private:
+	double					m_flLastShootTime;
+	bool					m_bWasDropped;
 
 #else // Client .dll only
 	bool					m_bJustRestored;

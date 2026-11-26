@@ -6,6 +6,8 @@
 
 #ifndef H_CYCLER_H
 #define H_CYCLER_H
+
+#include "ai_basenpc.h"
 #ifdef _WIN32
 #pragma once
 #endif

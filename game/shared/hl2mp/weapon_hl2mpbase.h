@@ -76,7 +76,7 @@ public:
 	#endif
 
 	float		m_flPrevAnimTime;
-	float  m_flNextResetCheckTime;
+	double	m_flNextResetCheckTime;
 
 	Vector	GetOriginalSpawnOrigin( void ) { return m_vOriginalSpawnOrigin;	}
 	QAngle	GetOriginalSpawnAngles( void ) { return m_vOriginalSpawnAngles;	}

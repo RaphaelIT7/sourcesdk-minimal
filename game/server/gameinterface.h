@@ -149,6 +149,7 @@ public:
 	virtual bool 			GMOD_CheckPassword( unsigned long long, char const*, char const*, char const*, char const*, char *, uint ) OVERRIDE;
 	virtual void 			GMOD_ClientSignOnStateChanged( int userID, int oldState, int newState ) OVERRIDE;
 	virtual void 			GMOD_OnAllSoundsStoppedSV() OVERRIDE;
+	virtual void 			GMOD_OnStringTablesRemoved() OVERRIDE;
 
 private:
 

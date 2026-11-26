@@ -12,6 +12,7 @@
 
 #include "vehicle_sounds.h"
 #include "entityblocker.h"
+#include "iservervehicle.h"
 
 class CSoundPatch;
 
@@ -288,14 +289,13 @@ public:
 	};
 
 	CUtlVector< exitanim_t >		m_ExitAnimations;
+	char							m_chPreviousTextureType;
 	bool							m_bParsedAnimations;
 	bool							m_bUseLegacyExitChecks;	// HACK: Choreo vehicles use non-sensical setups to move the player, we need to poll their attachment point positions
 	int								m_iCurrentExitAnim;
 	Vector							m_vecCurrentExitEndPoint;
 	Vector							m_savedViewOffset;
 	CHandle<CEntityBlocker>			m_hExitBlocker;				// Entity to prevent other entities blocking the player's exit point during the exit animation
-
-	char							m_chPreviousTextureType;
 
 // sound state
 	vehiclesounds_t					m_vehicleSounds;

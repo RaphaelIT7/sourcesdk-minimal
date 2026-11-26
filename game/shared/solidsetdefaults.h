@@ -6,6 +6,7 @@
 
 #ifndef SOLIDSETDEFAULTS_H
 #define SOLIDSETDEFAULTS_H
+#include "vcollide_parse.h"
 #ifdef _WIN32
 #pragma once
 #endif

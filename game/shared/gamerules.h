@@ -176,15 +176,7 @@ public:
 	//Allow thirdperson camera.
 	virtual bool AllowThirdPersonCamera( void ) { return false; }
 
-	virtual void ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues ) {} 
-
-	// IsConnectedUserInfoChangeAllowed allows the clients to change
-	// cvars with the FCVAR_NOT_CONNECTED rule if it returns true
-	virtual bool IsConnectedUserInfoChangeAllowed( CBasePlayer *pPlayer )
-	{ 
-		Assert( !IsMultiplayer() );
-		return true; 
-	}
+	virtual void ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues ) {}
 
 #ifdef CLIENT_DLL
 
@@ -204,8 +196,6 @@ public:
 	virtual bool ShouldWarnOfAbandonOnQuit() { return false; }
 	
 #else
-
-	virtual void Status( void (*print) (const char *fmt, ...) ) {}
 
 	virtual void GetTaggedConVarList( KeyValues *pCvarTagList ) {}
 
@@ -417,8 +407,6 @@ public:
 	virtual void OnFileReceived( const char * fileName, unsigned int transferID ) { return; }
 
 	virtual bool IsHolidayActive( /*EHoliday*/ int eHoliday ) const { return false; }
-
-	virtual bool IsManualMapChangeOkay( const char **pszReason ){ return true; }
 
 #ifndef CLIENT_DLL
 private:

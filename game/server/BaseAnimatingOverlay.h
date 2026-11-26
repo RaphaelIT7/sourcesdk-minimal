@@ -64,7 +64,7 @@ public:
 	float	m_flKillRate;
 	float	m_flKillDelay;
 
-	float	m_flLayerAnimtime;
+	double	m_flLayerAnimtime;
 	float	m_flLayerFadeOuttime;
 
 	// For checking for duplicates
@@ -88,7 +88,7 @@ public:
 
 	float	m_flLastEventCheck;
 
-	float	m_flLastAccess;
+	double	m_flLastAccess;
 
 	// Network state changes get forwarded here.
 	CBaseAnimatingOverlay *m_pOwnerEntity;

@@ -28,6 +28,15 @@ public:
 	float				maxheight;
 };
 
+/*
+	Credits:
+		I've got these values from Source.NET!
+		https://github.com/marchc1/Source.NET/blob/00e4ba4edfef9b18cc774bdf1b22db2d87216734/Game.Shared/UserCmd.cs
+
+	RaphaelIT7: I've yoinked it from Source.NET since they did great work for it <3
+*/
+#define MAX_BUTTON_PRESSED 5
+#define MAX_MOTION_SENSOR_POSITIONS 20
 class CUserCmd
 {
 public:
@@ -35,8 +44,6 @@ public:
 	{
 		Reset();
 	}
-
-	virtual ~CUserCmd() { };
 
 	void Reset()
 	{
@@ -57,10 +64,19 @@ public:
 		mousedx = 0;
 		mousedy = 0;
 
+		for ( int i=0; i<MAX_BUTTON_PRESSED; ++i )
+			pressedButtons[i] = 0;
+
+		scrollSpeed = 0;
+		worldClicking = false;
+		isTyping = false;
+		worldClickDirection.Zero();
+		for ( int i=0; i<MAX_MOTION_SENSOR_POSITIONS; ++i )
+			motionSensorPosition[i].Zero();
+
+		forced = false;
+
 		hasbeenpredicted = false;
-#if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
-		entitygroundcontact.RemoveAll();
-#endif
 	}
 
 	CUserCmd& operator =( const CUserCmd& src )
@@ -85,11 +101,20 @@ public:
 		mousedx				= src.mousedx;
 		mousedy				= src.mousedy;
 
-		hasbeenpredicted	= src.hasbeenpredicted;
+		for ( int i=0; i<MAX_BUTTON_PRESSED; ++i )
+			pressedButtons[i] = src.pressedButtons[ i ];
 
-#if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
-		entitygroundcontact			= src.entitygroundcontact;
-#endif
+		scrollSpeed = src.scrollSpeed;
+		worldClicking = src.worldClicking;
+		isTyping = src.isTyping;
+		worldClickDirection = src.worldClickDirection;
+
+		for ( int i=0; i<MAX_MOTION_SENSOR_POSITIONS; ++i )
+			motionSensorPosition[i] = src.motionSensorPosition[i];
+
+		forced = src.forced;
+
+		hasbeenpredicted	= src.hasbeenpredicted;
 
 		return *this;
 	}
@@ -149,11 +174,9 @@ public:
 	//  upward velocity.
 	float	upmove;         
 	// Attack button states
-	int		buttons;		
-	// Impulse command issued.
-	byte    impulse;        
+	int		buttons;
 	// Current weapon id
-	int		weaponselect;	
+	int		weaponselect;
 	int		weaponsubtype;
 
 	int		random_seed;	// For shared random functions
@@ -167,11 +190,16 @@ public:
 	// Client only, tracks whether we've predicted this command at least once
 	bool	hasbeenpredicted;
 
-	// Back channel to communicate IK state
-#if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
-	CUtlVector< CEntityGroundContact > entitygroundcontact;
-#endif
+	// Impulse command issued.
+	byte    impulse;
 
+	bool isTyping;
+	bool forced;
+	unsigned char pressedButtons[MAX_BUTTON_PRESSED];
+	char scrollSpeed;
+	bool worldClicking;
+	Vector worldClickDirection;
+	Vector motionSensorPosition[MAX_MOTION_SENSOR_POSITIONS];
 };
 
 void ReadUsercmd( bf_read *buf, CUserCmd *move, CUserCmd *from );

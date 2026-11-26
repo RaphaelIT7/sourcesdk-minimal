@@ -234,7 +234,7 @@ private:
 	float				m_flStopTalkTimeWithoutDelay;	// same as the above, but minus the delay before other people can speak
 	float				m_flBlockedTalkTime;
 	int					m_voicePitch;					// pitch of voice for this head
-	float				m_flLastTimeAcceptedSpeak;		// because speech may not be blocked until NoteSpeaking called by scene ent, this handles in-think blocking
+	double				m_flLastTimeAcceptedSpeak;		// because speech may not be blocked until NoteSpeaking called by scene ent, this handles in-think blocking
 	
 	DECLARE_SIMPLE_DATADESC();
 
@@ -285,7 +285,7 @@ public:
 	// These two methods allow looking up a response and dispatching it to be two different steps
 	bool			SpeakFindResponse( AI_Response& response, AIConcept_t concept, const char *modifiers = NULL );
 	bool 			SpeakDispatchResponse( AIConcept_t concept, AI_Response& response );
-	virtual void	PostSpeakDispatchResponse( AIConcept_t concept, AI_Response& response ) { return; }
+	virtual void	PostSpeakDispatchResponse( AIConcept_t concept, AI_Response *response ) { return; }
 	float 			GetResponseDuration( AI_Response& response );
 
 	float GetTimeSpeechComplete() const 	{ return this->GetExpresser()->GetTimeSpeechComplete(); }
@@ -372,7 +372,7 @@ inline bool CAI_ExpresserHost<BASE_NPC>::SpeakDispatchResponse( AIConcept_t conc
 {
 	if ( this->GetExpresser()->SpeakDispatchResponse( concept, response ) )
 	{
-		PostSpeakDispatchResponse( concept, response );
+		PostSpeakDispatchResponse( concept, &response );
 		return true;
 	}
 

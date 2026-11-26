@@ -288,7 +288,7 @@ protected:
 	
 	EHANDLE 		   				m_hFollowTarget;
 	AI_FollowNavInfo_t 				m_FollowNavGoal;
-	float							m_flTimeUpdatedFollowPosition;
+	double							m_flTimeUpdatedFollowPosition;
 	bool							m_bFirstFacing;
 	float							m_flTimeFollowTargetVisible;
 	

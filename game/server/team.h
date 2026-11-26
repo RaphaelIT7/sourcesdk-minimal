@@ -45,14 +45,6 @@ public:
 	virtual bool		ShouldTransmitToPlayer( CBasePlayer* pRecipient, CBaseEntity* pEntity );
 
 	//-----------------------------------------------------------------------------
-	// Spawnpoints
-	//-----------------------------------------------------------------------------
-	virtual void InitializeSpawnpoints( void );
-	virtual void AddSpawnpoint( CTeamSpawnPoint *pSpawnpoint );
-	virtual void RemoveSpawnpoint( CTeamSpawnPoint *pSpawnpoint );
-	virtual CBaseEntity *SpawnPlayer( CBasePlayer *pPlayer );
-
-	//-----------------------------------------------------------------------------
 	// Players
 	//-----------------------------------------------------------------------------
 	virtual void InitializePlayers( void );
@@ -79,7 +71,6 @@ public:
 	virtual int GetAliveMembers( void );
 
 public:
-	CUtlVector< CTeamSpawnPoint * > m_aSpawnPoints;
 	CUtlVector< CBasePlayer * >		m_aPlayers;
 
 	// Data
@@ -89,7 +80,6 @@ public:
 	int		m_iDeaths;
 
 	// Spawnpoints
-	int		m_iLastSpawn;		// Index of the last spawnpoint used
 
 	CNetworkVar( int, m_iTeamNum );			// Which team is this?
 };

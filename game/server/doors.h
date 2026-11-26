@@ -141,10 +141,10 @@ public:
 	void			MovingSoundThink( void );
 #ifdef HL1_DLL
 	bool		PassesBlockTouchFilter(CBaseEntity *pOther);
+#endif
 	string_t	m_iBlockFilterName;
 	EHANDLE		m_hBlockFilter;
-#endif
-	
+
 	bool		ShouldLoopMoveSound( void ) { return m_bLoopMoveSound; }
 	bool		m_bLoopMoveSound;			// Move sound loops until stopped
 

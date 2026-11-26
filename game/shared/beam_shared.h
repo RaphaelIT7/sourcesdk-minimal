@@ -197,7 +197,7 @@ private:
 protected:
 	CNetworkVar( float, m_flFrameRate );
 	CNetworkVar( float, m_flHDRColorScale );
-	float		m_flFireTime;
+	double		m_flFireTime;
 	float		m_flDamage;			// Damage per second to touchers.
 	CNetworkVar( int, m_nNumBeamEnts );
 #if defined( CLIENT_DLL )

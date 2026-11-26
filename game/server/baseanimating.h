@@ -337,9 +337,9 @@ public:
 
 	virtual int GetPhysBoneNumber(int bone);
 	virtual void SetBoneManipulator(CBaseEntity* pEnt);
-	virtual int GetBoneManipulator(bool bBool);
+	virtual CBaseEntity* GetBoneManipulator(bool bBool);
 	virtual void SetFlexManipulator(CBaseEntity* pEnt);
-	virtual int GetFlexManipulator(bool bBool);
+	virtual CBaseEntity* GetFlexManipulator(bool bBool);
 	virtual QAngle GetAnimStateRenderAngles();
 	virtual void SetAnimStateRenderAngles(QAngle& ang);
 private:
@@ -350,6 +350,9 @@ private:
 	void InputSetLightingOriginRelative( inputdata_t &inputdata );
 	void InputSetLightingOrigin( inputdata_t &inputdata );
 	void InputSetModelScale( inputdata_t &inputdata );
+	void InputSetModel( inputdata_t &inputdata );
+	void InputSetCycle( inputdata_t &inputdata );
+	void InputSetPlaybackRate( inputdata_t &inputdata );
 
 	bool CanSkipAnimation( void );
 
@@ -426,17 +429,17 @@ protected:
 
 public:
 	Vector m_OverrideViewTarget;
-	BYTE gap1494[132];
-	void* m_pBoneManiuplator;
-	void* m_pFlexManipulator;
+	EHANDLE m_hEntityFlame;
+	int m_PhysBoneNumbers[32];
+	EHANDLE m_pBoneManipulator;
+	EHANDLE m_pFlexManipulator;
 	COutputEvent m_OnIgnite;
 
 private:
 	CStudioHdr			*m_pStudioHdr;
+	MDLHandle_t			m_hStudioHdr;
 	CThreadFastMutex	m_StudioHdrInitLock;
 	CThreadFastMutex	m_BoneSetupMutex;
-
-	BYTE _offset6[2]; // Could be a part of CBaseAnimatingOverlay
 
 // FIXME: necessary so that cyclers can hack m_bSequenceFinished
 friend class CFlexCycler;

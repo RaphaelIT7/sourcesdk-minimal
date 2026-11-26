@@ -29,7 +29,6 @@ public:
 	virtual void OnDamagedByExplosion( const CTakeDamageInfo &info );
 	virtual void PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, float fvol, bool force );
 	virtual void DeathSound( const CTakeDamageInfo &info );
-	virtual void SetAnimation( PLAYER_ANIM playerAnim );
 	virtual bool ClientCommand( const CCommand &args );
 	virtual bool StartObserverMode( int mode );
 	virtual CBaseEntity* EntSelectSpawnPoint( void );
@@ -51,12 +50,41 @@ public:
 
 	virtual void HandleSpeedChanges( void );
 	virtual void GiveAllItems( void );
+	virtual Vector GetPlayerColor();
+	virtual Vector GetWeaponColor();
 	virtual void SetPlayerColor( Vector color );
 	virtual void SetWeaponColor( Vector color );
 
 public:
-	char offset1[1120];
-	CNetworkHandle( CBaseEntity, m_GMOD_Hands );
+	float m_flInitialSpawnTime;
+	bool m_bTransition;
+	bool m_bNeedsUniqueID;
+	unsigned int m_nUniqueID;
+	char m_szUniqueID[128];
+	float m_flForceTransmitTimes[MAX_PLAYERS];
+	bool m_bSuppressPickupNotices;
+	bool m_bShouldDropWeapon;
+	intp m_UnusedPadding;
+
+	CNetworkVar( int, m_iGModPlayerFlags );
+	CNetworkHandle( CBaseEntity, m_HoveredWidget );
+	CNetworkHandle( CBaseEntity, m_PressedWidget );
+	CNetworkHandle( CBaseEntity, m_Driving );
+	CNetworkVar( int, m_DrivingMode );
+	CNetworkHandle( CBaseEntity, m_Hands );
+	CNetworkVar( int, m_PlayerClass );
+	CNetworkVar( int, m_iMaxArmor );
+	CNetworkVector( m_PlayerColor );
+	CNetworkVector( m_WeaponColor );
+	CNetworkVar( bool, m_bCanZoom );
+	CNetworkVar( bool, m_bCanWalk );
+	CNetworkVar( bool, m_bIsTyping );
+	CNetworkVar( float, m_StepSize );
+	CNetworkVar( float, m_JumpPower );
+	CNetworkVector( m_ViewOffset );
+	CNetworkVector( m_ViewOffsetDucked );
+	CNetworkVar( float, m_fGestureEndTime );
+	Vector m_vecCmdExtra[20];
 };
 
 inline CGMOD_Player *ToCGMOD_Player( CBaseEntity *pEntity )

@@ -66,9 +66,11 @@ private:
 
 
 private:
+	double				m_LastVoicePacketTime;
 	IVoiceGameMgrHelper	*m_pHelper;
 	int					m_nMaxPlayers;
 	double				m_UpdateInterval;						// How long since the last update.
+	double				m_FullUpdateInterval;
 	int					m_iProximityDistance;
 };
 

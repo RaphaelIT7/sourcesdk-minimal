@@ -14,6 +14,13 @@
 #include "nav.h"
 
 class CNavArea;
+namespace GarrysMod
+{
+	namespace Lua
+	{
+		class CLuaObject;
+	}
+}
 
 //--------------------------------------------------------------------------------------------------------------
 /**
@@ -115,6 +122,10 @@ private:
 
 	static unsigned int m_nextID;					///< used to allocate unique IDs
 	unsigned int m_id;								///< unique area ID
+
+	void *m_luaUserData;
+	GarrysMod::Lua::CLuaObject *m_luaObject;
+	bool m_isRemovedFromLists;
 };
 typedef CUtlVector< CNavLadder * > NavLadderVector;
 

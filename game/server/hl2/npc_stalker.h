@@ -27,10 +27,10 @@ class CNPC_Stalker : public CAI_BaseStalker
 	DECLARE_CLASS( CNPC_Stalker, CAI_BaseStalker );
 
 public:
-	double			m_flNextAttackSoundTime;
-	double			m_flNextBreatheSoundTime;
-	double			m_flNextScrambleSoundTime;
-	double			m_flNextNPCThink;
+	float			m_flNextAttackSoundTime;
+	float			m_flNextBreatheSoundTime;
+	float			m_flNextScrambleSoundTime;
+	float			m_flNextNPCThink;
 
 	// ------------------------------
 	//	Laser Beam
@@ -38,16 +38,16 @@ public:
 	int					m_eBeamPower;
 	Vector				m_vLaserDir;
 	Vector				m_vLaserTargetPos;
-	double				m_fBeamEndTime;
-	double				m_fBeamRechargeTime;
-	double				m_fNextDamageTime;
-	double				m_nextSmokeTime;
+	float				m_fBeamEndTime;
+	float				m_fBeamRechargeTime;
+	float				m_fNextDamageTime;
+	float				m_nextSmokeTime;
 	float				m_bPlayingHitWall;
 	float				m_bPlayingHitFlesh;
 	CBeam*				m_pBeam;
 	CSprite*			m_pLightGlow;
 	int					m_iPlayerAggression;
-	double				m_flNextScreamTime;
+	float				m_flNextScreamTime;
 
 	void				KillAttackBeam(void);
 	void				DrawAttackBeam(void);

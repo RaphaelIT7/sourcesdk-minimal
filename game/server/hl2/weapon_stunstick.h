@@ -10,14 +10,14 @@
 #pragma once
 #endif
 
-#include "basebludgeonweapon.h"
+#include "hl2mp/weapon_hl2mpbasebasebludgeon.h"
 
 #define	STUNSTICK_RANGE		75.0f
 #define	STUNSTICK_REFIRE	0.6f
 
-class CWeaponStunStick : public CBaseHLBludgeonWeapon
+class CWeaponStunStick : public CBaseHL2MPBludgeonWeapon
 {
-	DECLARE_CLASS( CWeaponStunStick, CBaseHLBludgeonWeapon );
+	DECLARE_CLASS( CWeaponStunStick, CBaseHL2MPBludgeonWeapon );
 	DECLARE_DATADESC();
 
 public:

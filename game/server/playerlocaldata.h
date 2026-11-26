@@ -72,8 +72,8 @@ public:
 	// Is the player wearing the HEV suit
 	CNetworkVar( bool, m_bWearingSuit );
 	CNetworkVar( bool, m_bPoisoned );
-	CNetworkVar( float, m_flStepSize );
 	CNetworkVar( bool, m_bAllowAutoMovement );
+	CNetworkVar( float, m_flStepSize );
 
 	// 3d skybox
 	CNetworkVarEmbedded( sky3dparams_t, m_skybox3d );
@@ -84,6 +84,15 @@ public:
 	CNetworkVarEmbedded( audioparams_t, m_audio );
 
 	CNetworkVar( bool, m_bSlowMovement );
+
+	CNetworkVar( bool, m_bDuckToggled );	// If true, the player is crouching via a toggle
+	CNetworkVar( float, m_fSprintSpeed );
+	CNetworkVar( float, m_fWalkSpeed );
+	CNetworkVar( float, m_fSlowWalkSpeed );
+	CNetworkVar( float, m_fLadderSpeed );
+	CNetworkVar( float, m_fCrouchedWalkSpeed );
+	CNetworkVar( float, m_fDuckSpeed );
+	CNetworkVar( float, m_fUnDuckSpeed );
 };
 
 EXTERN_SEND_TABLE(DT_Local);

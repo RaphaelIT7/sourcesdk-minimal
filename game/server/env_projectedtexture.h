@@ -40,6 +40,12 @@ public:
 //	void InputSetLightColor( inputdata_t &inputdata );
 	void InputSetSpotlightTexture( inputdata_t &inputdata );
 	void InputSetAmbient( inputdata_t &inputdata );
+	void InputSetLightColor( inputdata_t &inputdata );
+	void InputSetLightStyle( inputdata_t &inputdata );
+	void InputSetPattern( inputdata_t &inputdata );
+	void InputSetNearZ( inputdata_t &inputdata );
+	void InputSetFarZ( inputdata_t &inputdata );
+	void InputToggle( inputdata_t &inputdata );
 
 	void InitialThink( void );
 
@@ -54,11 +60,14 @@ private:
 	CNetworkVar( bool, m_bLightWorld );
 	CNetworkVar( bool, m_bCameraSpace );
 	CNetworkVector( m_LinearFloatLightColor );
-	CNetworkVar( float, m_flAmbient );
 	CNetworkString( m_SpotlightTextureName, MAX_PATH );
 	CNetworkVar( int, m_nSpotlightTextureFrame ); // RaphaelIT7: 14 bits are used for networking!
 	CNetworkVar( float, m_flNearZ );
 	CNetworkVar( float, m_flFarZ );
 	CNetworkVar( int, m_nShadowQuality );
 	// Also networks 8 bits for m_iStyle
+	CNetworkVar( int, m_iStyle );
+	int m_iDefaultStyle;
+	string_t m_iszPattern;
+	float m_flLightStrength;
 };

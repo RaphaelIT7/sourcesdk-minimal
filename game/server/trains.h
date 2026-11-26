@@ -111,6 +111,11 @@ public:
 	void InputSetSpeedDirAccel( inputdata_t &inputdata );
 	void InputTeleportToPathTrack( inputdata_t &inputdata );
 	void InputSetSpeedForwardModifier( inputdata_t &inputdata );
+	void InputSetMaxSpeed( inputdata_t &inputdata );
+	void InputMoveToPathNode( inputdata_t &inputdata );
+	void InputTeleportToPathNode( inputdata_t &inputdata );
+	void InputLockOrientation( inputdata_t &inputdata );
+	void InputUnlockOrientation( inputdata_t &inputdata );
 
 	static CFuncTrackTrain *Instance( edict_t *pent );
 
@@ -184,6 +189,7 @@ private:
 	string_t	m_iszSoundMovePing;			// Ping sound to play while moving. Interval decreased based on speed.
 	string_t	m_iszSoundStart;			// Sound to play when starting to move.
 	string_t	m_iszSoundStop;				// Sound to play when stopping.
+	string_t	m_strPathTarget;
 
 	float		m_flMoveSoundMinTime;		// The most often to play the move 'ping' sound (used at max speed)
 	float		m_flMoveSoundMaxTime;		// The least often to play the move 'ping' sound (used approaching zero speed)
@@ -197,6 +203,7 @@ private:
 	bool		m_bSoundPlaying;
 
 	COutputEvent m_OnStart,m_OnNext; 
+	COutputEvent m_OnArrivedAtDestinationNode;
 
 	bool		m_bManualSpeedChanges;		// set when we want to send entity IO to govern speed and obey our TrainVelocityType_t
 	float		m_flDesiredSpeed;			// target speed, when m_bManualSpeedChanges is set

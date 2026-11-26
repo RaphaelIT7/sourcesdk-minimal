@@ -192,7 +192,6 @@ private:
 
 	// Weapon art
 	string_t				m_sVMName;			// View model of this weapon
-	string_t				m_sAnimationPrefix;		// Prefix of the animations that should be used by the player carrying this weapon
 
 #if defined( CLIENT_DLL )
 	int						m_nOldAnimationParity;
@@ -201,10 +200,6 @@ private:
 
 	typedef CHandle< CBaseCombatWeapon > CBaseCombatWeaponHandle;
 	CNetworkVar( CBaseCombatWeaponHandle, m_hWeapon );
-
-	// Control panel
-	typedef CHandle<CVGuiScreen>	ScreenHandle_t;
-	CUtlVector<ScreenHandle_t>	m_hScreens;
 };
 
 #endif // BASEVIEWMODEL_SHARED_H

@@ -87,7 +87,7 @@ public:
 		m_iszDeathExpression( NULL_STRING ),
 		m_iszExpressionOverride( NULL_STRING )
 	{
-		memset( m_flextarget, 0, 64 * sizeof( m_flextarget[0] ) );
+		memset( m_flextarget, 0, MAXSTUDIOFLEXCTRL * sizeof( m_flextarget[0] ) );
 	}
 
 	~CAI_BaseActor()
@@ -215,13 +215,13 @@ private:
 
 	//---------------------------------
 
-	float					m_flBlinktime;
+	double					m_flBlinktime;
 	EHANDLE					m_hLookTarget;
 	CAI_InterestTarget		m_lookQueue;
 	CAI_InterestTarget		m_syntheticLookQueue;
 
 	CAI_InterestTarget		m_randomLookQueue;
-	float					m_flNextRandomLookTime;	// FIXME: move to scene
+	double					m_flNextRandomLookTime;	// FIXME: move to scene
 
 	//---------------------------------
 
@@ -277,7 +277,7 @@ private:
 	//---------------------------------
 	bool RandomFaceFlex( CSceneEventInfo *info, CChoreoScene *scene, CChoreoEvent *event );
 	bool RandomHeadFlex( CSceneEventInfo *info, CChoreoScene *scene, CChoreoEvent *event );
-	float m_flextarget[64];
+	float m_flextarget[MAXSTUDIOFLEXCTRL];
 
 public:
 	virtual bool UseSemaphore( void );
@@ -298,6 +298,7 @@ protected:
 private:
 	//---------------------------------
 	CAI_Expresser *m_pExpresser;
+	double	m_flExpressionSceneEndTime;
 };
 
 //-----------------------------------------------------------------------------

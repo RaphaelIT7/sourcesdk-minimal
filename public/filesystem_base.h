@@ -17,15 +17,7 @@
 #include "tier1/tier1.h"
 #include "tier1/utlintrusivelist.h"
 #include "threadsaferefcountedobject.h"
-
-#define MAX_ARCHIVE_FILES_TO_KEEP_OPEN_AT_ONCE 512
-#define PACKEDFILE_EXT_HASH_SIZE 15
-
-#ifdef _WIN32
-typedef HANDLE PackDataFileHandle_t;
-#else
-typedef FileHandle_t PackDataFileHandle_t;
-#endif
+#include "vpklib/packedstore.h"
 
 class IThreadPool;
 class CPackFile;
@@ -47,33 +39,40 @@ enum FileType_t
 	FT_PACK_TEXT
 };
 
-union Placeholder4
-{
-	const uint8_t bytes[4];
-	const uint16_t shorts[2];
-	uint32_t integer;
-	const char *string;
-	void *pointer;
-};
+struct MapPakSearchFile;
 
 class CPackFileHandle
 {
 public:
+	virtual int Read( void *pBuffer, int nDestSize, int nBytes ) = 0;
+	virtual int Seek( int64_t nOffset, int nWhence ) = 0;
+	virtual int Tell( ) = 0;
+	virtual unsigned int Size( ) = 0;
+
 	int64_t m_nBase;
-	uint32_t m_nFilePointer;
+	int64_t m_nFilePointer;
 	CPackFile *m_pOwner;
 	uint32_t m_nLength;
 	uint32_t m_nIndex;
 };
 
+namespace Addon
+{
+	class FileHandle;
+}
+
 class CFileHandle
 {
 public:
+	virtual ~CFileHandle( ) = 0;
+
 #if !defined( _RETAIL )
 	char *m_pszTrueFileName;
 #endif
 
 	CPackFileHandle *m_pPackFileHandle;
+	CPackedStoreFileHandle m_VPKHandle;
+	Addon::FileHandle *m_pAddonFileHandle;
 	int64_t m_nLength;
 	FileType_t m_type;
 	FILE *m_pFile;
@@ -86,8 +85,10 @@ class CPackFile : public CRefCounted<CRefCountServiceMT>
 public:
 	virtual ~CPackFile( ) = 0;
 	virtual CFileHandle *OpenFile( const char *pFileName, const char *pOptions = "rb" ) = 0;
+	virtual bool ContainsFile( const char *pFileName ) = 0;
 	virtual bool Prepare( int64_t fileLen = -1, int64_t nFileOfs = 0 ) = 0;
-	virtual bool FindFile( const char *pFilename, int32_t &nIndex, int64_t &nPosition, int32_t &nLength ) = 0;
+	virtual bool FindFile( const char *pFilename, int32_t &nIndex, int64_t &nPosition, int32_t &nOriginalSize, int32_t &nCompressedSize, uint16_t &nCompressionMethod ) = 0;
+	virtual void FindFirstHelper( CUtlLinkedList<MapPakSearchFile> *, const char * ) = 0;
 	virtual int32_t ReadFromPack( int32_t nIndex, void *buffer, int32_t nDestBytes, int32_t nBytes, int64_t nOffset ) = 0;
 	virtual bool IndexToFilename( int32_t nIndex, char *buffer, int32_t nBufferSize ) = 0;
 	virtual void SetupPreloadData( ) = 0;
@@ -99,10 +100,13 @@ public:
 	int64_t m_nBaseOffset; // 8b
 	CUtlString m_ZipName; // 4b
 	bool m_bIsMapPath; // 4b
-	int32_t m_lPackFileTime; // 4b
+	long m_lPackFileTime; // 4b
 	int32_t m_refCount; // 4b
 	int32_t m_nOpenFiles; // 4b
-	FILE *m_hPackFileHandle; // 4b
+	FILE *m_hPackFileHandleFS; // 4b
+	CPackedStoreFileHandle m_hPackFileHandleVPK;
+	bool m_bIsExcluded;
+	int32_t m_PackFileID;
 	int64_t m_FileLength; // 8b
 	CBaseFileSystem *m_fs;  // 4b
 };
@@ -114,17 +118,22 @@ public:
 	{
 	public:
 		uint32_t m_nPosition;
-		uint32_t m_nLength;
+		uint32_t m_nOriginalSize;
+		uint32_t m_nCompressedSize;
 		uint32_t m_HashName;
 		uint16_t m_nPreloadIdx;
 		uint16_t pad;
+		uint16_t m_nCompressionMethod;
 #if !defined( _RETAIL )
 		FileNameHandle_t m_hDebugFilename;
 #endif
 	};
 
 	class CPackFileLessFunc
-	{ };
+	{
+	public:
+		bool Less( CPackFileEntry const &src1, CPackFileEntry const &src2, void *pCtx );
+	};
 
 	CUtlSortVector<CPackFileEntry, CPackFileLessFunc> m_PackFiles; // 28b
 	int64_t m_nPreloadSectionOffset; // 8b
@@ -134,8 +143,7 @@ public:
 	struct ZIP_PreloadDirectoryEntry *m_pPreloadDirectory; // 4b
 	void *m_pPreloadData; // 4b
 	CByteswap m_swap; // 4b
-
-	const Placeholder4 placeholders[13] = { };
+	uint8_t *m_pMemoryImage;
 };
 
 class CPathIDFileList
@@ -172,142 +180,6 @@ public:
 	IFileList *m_pAllowFromDiskList;
 };
 typedef CThreadSafeRefCountedObject<CWhitelistSpecs *> CWhitelistHolder;
-
-// a 1MB chunk of cached VPK data
-// For CPackedStoreReadCache
-struct CachedVPKRead_t
-{
-	int m_nPackFileNumber;	// identifier
-	int m_nFileFraction;	// identifier
-	uint8 *m_pubBuffer;		// data
-	int m_cubBuffer;		// data
-	int m_idxLRU;			// bookkeeping
-	int m_hMD5RequestHandle;// bookkeeping
-	int m_cFailedHashes;	// did the MD5 match what it was supposed to?
-	MD5Value_t m_md5Value;
-	MD5Value_t m_md5ValueRetry;
-};
-
-class CPackedStoreReadCache
-{
-public:
-	// cache 8 MB total. Caching more wastes too much memory.
-	// On dedicated servers this cache is not used.
-	static const int k_nCacheBuffersToKeep = 8;
-	static const int k_cubCacheBufferSize = 0x00100000; // 1MB
-	static const int k_nCacheBufferMask = 0x7FF00000;
-
-	CThreadRWLock m_rwlock;
-	CUtlRBTree<CachedVPKRead_t> m_treeCachedVPKRead; // all the reads we have done
-
-	CTSQueue<CachedVPKRead_t> m_queueCachedVPKReadsRetry; // all the reads that have failed
-	CUtlLinkedList<CachedVPKRead_t> m_listCachedVPKReadsFailed; // all the reads that have failed
-
-	// current items in the cache
-	int m_cItemsInCache;
-	int m_rgCurrentCacheIndex[k_nCacheBuffersToKeep];
-	CInterlockedUInt m_rgLastUsedTime[k_nCacheBuffersToKeep];
-
-	CPackedStore *m_pPackedStore;
-	IBaseFileSystem *m_pFileSystem;
-	IThreadedFileMD5Processor *m_pFileTracker;
-	// stats
-	int m_cubReadFromCache;
-	int m_cReadFromCache;
-	int m_cDiscardsFromCache;
-	int m_cAddedToCache;
-	int m_cCacheMiss;
-	int m_cubCacheMiss;
-	int m_cFileErrors;
-	int m_cFileErrorsCorrected;
-	int m_cFileResultsDifferent;
-};
-
-struct ChunkHashFraction_t
-{
-	int m_nPackFileNumber;
-	int m_nFileFraction;
-	int m_cbChunkLen;
-	MD5Value_t m_md5contents;
-};
-
-class ChunkHashFractionLess_t
-{
-public:
-	bool Less( const ChunkHashFraction_t &lhs, const ChunkHashFraction_t &rhs, void *pContext )
-	{
-		if( lhs.m_nPackFileNumber < rhs.m_nPackFileNumber )
-			return true;
-		if( lhs.m_nPackFileNumber > rhs.m_nPackFileNumber )
-			return false;
-
-		if( lhs.m_nFileFraction < rhs.m_nFileFraction )
-			return true;
-		if( lhs.m_nFileFraction > rhs.m_nFileFraction )
-			return false;
-		return false;
-	}
-};
-
-struct FileHandleTracker_t
-{
-	int m_nFileNumber;
-	PackDataFileHandle_t m_hFileHandle;
-	int m_nCurOfs;
-	CThreadFastMutex m_Mutex;
-};
-
-class CPackedStore : public CRefCounted<CRefCountServiceMT>
-{
-public:
-	int m_PackFileID;
-
-	char m_pszFileBaseName[MAX_PATH];
-	char m_pszFullPathName[MAX_PATH];
-	int m_nDirectoryDataSize;
-	int m_nWriteChunkSize;
-	bool m_bUseDirFile;
-
-	IBaseFileSystem *m_pFileSystem;
-	IThreadedFileMD5Processor *m_pFileTracker;
-	CThreadFastMutex m_Mutex;
-
-	CPackedStoreReadCache m_PackedStoreReadCache;
-
-	CUtlIntrusiveList<class CFileExtensionData> m_pExtensionData[PACKEDFILE_EXT_HASH_SIZE];
-
-	CUtlVector<uint8> m_DirectoryData;
-	CUtlBlockVector<uint8> m_EmbeddedChunkData;
-
-	CUtlSortVector<ChunkHashFraction_t, ChunkHashFractionLess_t > m_vecChunkHashFraction;
-
-	// these are valid if BFileContainedHashes() is true
-	MD5Value_t m_DirectoryMD5;
-	MD5Value_t m_ChunkHashesMD5;
-	MD5Value_t m_TotalFileMD5;
-
-	int m_nHighestChunkFileIndex;
-
-	/// The private key that will be used to sign the directory file.
-	/// This will be empty for unsigned VPK's, or if we don't know the
-	/// private key.
-	CUtlVector<uint8> m_SignaturePrivateKey;
-
-	/// The public key in the VPK.
-	CUtlVector<uint8> m_SignaturePublicKey;
-
-	/// The signature that was read / computed
-	CUtlVector<uint8> m_Signature;
-
-	/// The number of bytes in the dir file that were signed
-	uint32 m_nSizeOfSignedData;
-
-	FileHandleTracker_t m_FileHandles[MAX_ARCHIVE_FILES_TO_KEEP_OPEN_AT_ONCE];
-
-	// For cache-ing directory and contents data
-	CUtlStringList m_directoryList; // The index of this list of directories...
-	CUtlMap<int, CUtlStringList *> m_dirContents; // ...is the key to this map of filenames
-};
 
 class CBaseFileSystem : public CTier1AppSystem<IFileSystem>
 {

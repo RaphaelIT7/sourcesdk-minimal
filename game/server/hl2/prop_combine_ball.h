@@ -65,6 +65,7 @@ public:
 	void InputFadeAndRespawn( inputdata_t &inputdata );
 	void InputKill( inputdata_t &inputdata );
 	void InputSocketed( inputdata_t &inputdata );
+	void InputSetLifetime( inputdata_t &inputdata );
 
 	enum
 	{
@@ -187,12 +188,13 @@ private:
 
 	CHandle < CFuncCombineBallSpawner > m_hSpawner;
 
-	EHANDLE m_hOriginalOwner;
+	int	m_iUnused;
 
 	CNetworkVar( bool, m_bEmit );
 	CNetworkVar( bool, m_bHeld );
 	CNetworkVar( bool, m_bLaunched );
 	CNetworkVar( float, m_flRadius );
+	EHANDLE m_hOriginalOwner;
 };
 
 class CFuncCombineBallSpawner : public CBaseEntity

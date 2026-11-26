@@ -11,7 +11,7 @@
 #pragma once
 #endif
 
-#define TEAMNUM_NUM_BITS	6
+#define TEAMNUM_NUM_BITS	15
 
 #include "entitylist.h"
 #include "entityoutput.h"
@@ -19,6 +19,8 @@
 #include "ServerNetworkProperty.h"
 #include "shareddefs.h"
 #include "engine/ivmodelinfo.h"
+#include "GarrysMod/Lua/LuaObject.h"
+#include <list>
 
 class CDamageModifier;
 class CDmgAccumulator;
@@ -30,9 +32,7 @@ class IResponseSystem;
 class IEntitySaveUtils;
 class CRecipientFilter;
 class CStudioHdr;
-class ILuaObject;
 class IGMODDataTable;
-class ILuaInterface;
 
 // Matching the high level concept is significantly better than other criteria
 // FIXME:  Could do this in the script file by making it required and bumping up weighting there instead...
@@ -337,6 +337,29 @@ struct thinkfunc_t
 
 struct EmitSound_t;
 struct rotatingpushmove_t;
+
+struct GModLuaCallback_t
+{
+	unsigned int m_iID;
+	GarrysMod::Lua::CLuaObject m_Function;
+	bool m_bRemoved;
+};
+
+struct GModLuaCallbackList_t
+{
+	std::list<GModLuaCallback_t*> m_Callbacks;
+	unsigned int m_iNextID;
+	int m_iActiveCount;
+};
+
+enum GModEntityCallback_t
+{
+	GMOD_CALLBACK_ANGLE_CHANGE,
+	GMOD_CALLBACK_BUILD_BONE_POSITIONS,
+	GMOD_CALLBACK_PHYSICS_COLLIDE,
+	GMOD_CALLBACK_BUILD_FLEX_WEIGHTS,
+	GMOD_CALLBACK_COUNT
+};
 
 #define CREATE_PREDICTED_ENTITY( className )	\
 	CBaseEntity::CreatePredictedEntityByName( className, __FILE__, __LINE__ );
@@ -665,6 +688,13 @@ public:
 	void InputDispatchResponse( inputdata_t& inputdata );
 	void InputDisableShadow( inputdata_t &inputdata );
 	void InputEnableShadow( inputdata_t &inputdata );
+	void InputSetLocalOrigin( inputdata_t &inputdata );
+	void InputSetLocalAngles( inputdata_t &inputdata );
+	void InputDisableDraw( inputdata_t &inputdata );
+	void InputEnableDraw( inputdata_t &inputdata );
+	void InputDisableReceivingFlashlight( inputdata_t &inputdata );
+	void InputEnableReceivingFlashlight( inputdata_t &inputdata );
+	void InputClearAllOutputs( inputdata_t &inputdata );
 	void InputAddOutput( inputdata_t &inputdata );
 	void InputFireUser1( inputdata_t &inputdata );
 	void InputFireUser2( inputdata_t &inputdata );
@@ -1850,10 +1880,10 @@ public:
 	virtual void OverridePosition();
 	virtual void InitializeScriptedEntity( const char * );
 	virtual void ClearLuaData();
-	virtual ILuaObject *GetLuaTable();
-	virtual ILuaObject *GetLuaEntity();
+	virtual GarrysMod::Lua::ILuaObject *GetLuaTable();
+	virtual GarrysMod::Lua::ILuaObject *GetLuaEntity();
 	virtual void Lua_OnEntityInitialized();
-	virtual void SetLuaTable( ILuaObject * );
+	virtual void SetLuaTable( GarrysMod::Lua::ILuaObject * );
 	virtual bool HasLuaTable();
 	virtual void ForcePhysicsDropObject();
 	virtual INextBot *GetNextBot();
@@ -1869,18 +1899,19 @@ public:
 	virtual void *GMOD_GetBoneFollowerMgr();
 
 public:
-	char m_strOverrideMaterial[255];
-	bool _offset1;
+	char m_strOverrideMaterial[256];
 	char m_strRealClassName[256];
-	int _offset2[3];
+	int m_OverrideMaterialIndex;
+	int m_RealClassNameIndex;
+	bool m_bOnFire;
 	float m_CreationTime;
-	BYTE gap0548[4];
-	const char* m_SubMaterials[32];
-	int m_SubMaterialIndex[32]; // This is the index for the string in the networkstring stringtable -> util.NetworkIDToString(i) == m_SubMaterials[i]
-	void* offset3[9];
-	ILuaInterface* m_GMOD_LuaInterface; // A pointer to g_Lua?
-	ILuaObject* m_GMOD_LuaTable; // The Lua table
-	ILuaObject* m_GMOD_LuaObject; // A reference to the lua object -> Player object, Entity object etc
+	int m_iParentPhysicsNum;
+	string_t m_iszOverrideSubMaterials[32];
+	int m_SubMaterialIndex[32]; // This is the index for the string in the networkstring stringtable -> util.NetworkIDToString(i) == m_iszOverrideSubMaterials[i]
+	CUtlVector<EHANDLE> m_DeleteEntities;
+	GarrysMod::Lua::CLuaObject m_GMOD_CalcAbsolutePosition;
+	GarrysMod::Lua::CLuaObject* m_GMOD_LuaTable; // The Lua table
+	GarrysMod::Lua::CLuaObject* m_GMOD_LuaObject; // A reference to the lua object -> Player object, Entity object etc
 	bool m_GMOD_bool[32];
 	float m_GMOD_float[32];
 	int m_GMOD_int[32];
@@ -1888,12 +1919,13 @@ public:
 	QAngle m_GMOD_QAngle[32];
 	EHANDLE m_GMOD_EHANDLE[32];
 	char m_GMOD_String[4][512];
-	void* m_GMOD_DataTable;
+	IGMODDataTable* m_GMOD_DataTable;
 	int m_iCreationID;
 	int m_iMapCreatedID;
-	BYTE gap1328[32];
+	EHANDLE m_hDrivingPlayer;
 	int m_iGModFlags;
-	BYTE gap134C[64];
+	CUtlLinkedList<EHANDLE, unsigned short> m_PreventTransmitPlayers;
+	GModLuaCallbackList_t m_GMOD_Callbacks[GMOD_CALLBACK_COUNT];
 };
 
 // Send tables exposed in this module.

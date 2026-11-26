@@ -41,6 +41,7 @@ public:
 
 	// RaphaelIT7: GMod uses 4 bits for networking!
 	CNetworkVar( int, m_movementType ) ;
+	CNetworkVar( float, m_flMoveTargetTime );
 
 	DECLARE_DATADESC();
 

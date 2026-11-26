@@ -41,8 +41,8 @@ public:
 
 	EHANDLE		m_hTarget;
 	Vector		m_vecPosition;
-	float		m_flStartTime;
-	float		m_flEndTime;
+	double		m_flStartTime;
+	double		m_flEndTime;
 	float		m_flRamp;
 	float		m_flInterest;
 

@@ -38,8 +38,8 @@ struct LadderMove_t
 	bool		m_bForceMount;
 	
 	// Simulation info for forcing the player move
-	float		m_flStartTime;
-	float		m_flArrivalTime;
+	double		m_flStartTime;
+	double		m_flArrivalTime;
 	Vector		m_vecGoalPosition;
 	Vector		m_vecStartPosition;
 

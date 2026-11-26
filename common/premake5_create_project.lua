@@ -6,7 +6,7 @@ group("SourceSDK")
 		targetdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 		debugdir("%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}")
 		objdir("!%{prj.location}/%{cfg.architecture}/%{cfg.buildcfg}/intermediate/%{prj.name}")
-		defines({"RAD_TELEMETRY_DISABLED", "COMMON_STATIC_LIB", "GAME_DLL"})
+		defines({"RAD_TELEMETRY_DISABLED", "COMMON_STATIC_LIB", "GAME_DLL", "GMOD_USE_SOURCESDK", "HL2_EPISODIC"})
 		externalincludedirs({
 			"../common",
 			"../public",
@@ -14,7 +14,8 @@ group("SourceSDK")
 			"../public/tier1",
 			"../game/shared",
 			"../game/server",
-			"../engine"
+			"../engine",
+			"../../include/" -- We need from garrysmod_common the GarrysMod/Lua/
 		})
 		files({
 			"netmessages.cpp",

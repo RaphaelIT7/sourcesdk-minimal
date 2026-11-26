@@ -14,6 +14,7 @@
 #include "basegrenade_shared.h"
 
 class CBeam;
+class CWeapon_SLAM;
 
 
 class CTripmineGrenade : public CBaseGrenade
@@ -38,6 +39,7 @@ public:
 
 public:
 	EHANDLE		m_hOwner;
+	CHandle<CWeapon_SLAM>	m_hMyWeaponSLAM;
 
 private:
 	float		m_flPowerUp;
@@ -45,7 +47,7 @@ private:
 	Vector		m_vecEnd;
 	float		m_flBeamLength;
 
-	CBeam		*m_pBeam;
+	CHandle<CBeam>		m_pBeam;
 	Vector		m_posOwner;
 	Vector		m_angleOwner;
 

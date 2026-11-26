@@ -500,9 +500,6 @@ private:
 
 	CAI_FreePass m_PlayerFreePass;
 	
-#ifdef HL2_EPISODIC
-	CUtlVector< EHANDLE >	m_hAttachedBusters;		// List of busters attached to us
-#endif // HL2_EPISODIC
 
 	static float	gm_zCannonDist;
 	static float	gm_zMinigunDist;
@@ -611,9 +608,9 @@ public:
 private:
 	bool		m_enable;
 	int			m_minigunState;
-	float		m_nextBulletTime;	// Minigun is shooting, when can I fire my next bullet?
-	float		m_burstTime;		// If firing, how long till done? If not, how long till I can?
-	float		m_nextTwitchTime;
+	double		m_nextBulletTime;	// Minigun is shooting, when can I fire my next bullet?
+	double		m_burstTime;		// If firing, how long till done? If not, how long till I can?
+	double		m_nextTwitchTime;
 	int			m_randomState;
 	EHANDLE		m_hTarget;
 	StriderMinigunAnimController_t m_yaw;

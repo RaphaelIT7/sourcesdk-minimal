@@ -297,7 +297,7 @@ struct AIScheduleState_t
 struct UnreachableEnt_t
 {
 	EHANDLE	hUnreachableEnt;	// Entity that's unreachable
-	float	fExpireTime;		// Time to forget this information
+	double	fExpireTime;		// Time to forget this information
 	Vector	vLocationWhenUnreachable;
 	
 	DECLARE_SIMPLE_DATADESC();
@@ -645,7 +645,7 @@ private:
 	bool				PreThink( void );
 	void				PerformSensing();
 	void				CheckOnGround( void );
-	void				MaintainSchedule( void );
+	virtual void		MaintainSchedule( void );
 	void				RunAnimation( void );
 	void				PostRun( void );
 	void				PerformMovement();
@@ -662,7 +662,7 @@ public:
 	//-----------------------------------------------------
 	
 	void				SetSchedule( CAI_Schedule *pNewSchedule );
-	bool				SetSchedule( int localScheduleID );
+	virtual bool		SetSchedule( int localScheduleID );
 	
 	void				SetDefaultFailSchedule( int failSchedule )	{ m_failSchedule = failSchedule; }
 	
@@ -682,8 +682,8 @@ public:
 	int					TaskIsRunning( void );
 	
 	virtual void		TaskFail( AI_TaskFailureCode_t );
-	void				TaskFail( const char *pszGeneralFailText )	{ TaskFail( MakeFailCode( pszGeneralFailText ) ); }
-	void				TaskComplete( bool fIgnoreSetFailedCondition = false );
+	virtual void		TaskFail( const char *pszGeneralFailText )	{ TaskFail( MakeFailCode( pszGeneralFailText ) ); }
+	virtual void		TaskComplete( bool fIgnoreSetFailedCondition = false );
 
 	void				TaskInterrupt()								{ m_ScheduleState.iTaskInterrupt++; }
 	void				ClearTaskInterrupt()						{ m_ScheduleState.iTaskInterrupt = 0; }
@@ -765,9 +765,9 @@ private:
 	bool				m_bDoPostRestoreRefindPath;
 
 	bool				m_bUsingStandardThinkTime;
-	int					m_iFrameBlocked;
 	bool				m_bInChoreo;
 	double				m_flLastRealThinkTime;
+	int					m_iFrameBlocked;
 
 	static int			gm_iNextThinkRebalanceTick;
 	static float		gm_flTimeLastSpawn;
@@ -829,14 +829,14 @@ public:
 	virtual const char*	ConditionName(int conditionID);
 	
 	virtual void		RemoveIgnoredConditions ( void );
-	void				SetCondition( int iCondition /*, bool state = true*/ );
+	virtual void		SetCondition( int iCondition /*, bool state = true*/ );
 	bool				HasCondition( int iCondition );
 	bool				HasCondition( int iCondition, bool bUseIgnoreConditions );
 	bool				HasInterruptCondition( int iCondition );
 	bool				HasConditionsToInterruptSchedule( int nLocalScheduleID );
 
-	void				ClearCondition( int iCondition );
-	void				ClearConditions( int *pConditions, int nConditions );
+	virtual void		ClearCondition( int iCondition );
+	virtual void		ClearConditions( int *pConditions, int nConditions );
 	void				SetIgnoreConditions( int *pConditions, int nConditions );
 	void				ClearIgnoreConditions( int *pConditions, int nConditions );
 	bool				ConditionInterruptsCurSchedule( int iCondition );
@@ -859,10 +859,6 @@ private:
 														//modified by leaf classes to suit their needs
 	CAI_ScheduleBits	m_ConditionsPreIgnore;
 	CAI_ScheduleBits	m_InverseIgnoreConditions;
-
-	bool				m_bForceConditionsGather;
-	bool				m_bConditionsGathered;
-	bool				m_bSkippedChooseEnemy;
 
 public:
 	//-----------------------------------------------------
@@ -906,16 +902,20 @@ public:
 	float				m_flLastStateChangeTime;
 
 private:
-	NPC_STATE			m_IdealNPCState;		// npc should change to this state
-	AI_Efficiency_t		m_Efficiency;
-	AI_MoveEfficiency_t m_MoveEfficiency;
-	float				m_flNextDecisionTime;
+	bool				m_bForceConditionsGather;
+	bool				m_bConditionsGathered;
+	bool				m_bSkippedChooseEnemy;
 
+	bool				m_bWakeSquad;
 	AI_SleepState_t		m_SleepState;
 	int					m_SleepFlags;
 	float				m_flWakeRadius;
-	bool				m_bWakeSquad;
 	int					m_nWakeTick;
+
+	NPC_STATE			m_IdealNPCState;		// npc should change to this state
+	AI_Efficiency_t		m_Efficiency;
+	AI_MoveEfficiency_t m_MoveEfficiency;
+	double				m_flNextDecisionTime;
 
 public:
 	//-----------------------------------------------------
@@ -1570,6 +1570,11 @@ protected:
 	// Shot regulator code
 	virtual void		OnUpdateShotRegulator( );
 
+private:
+	CAI_ShotRegulator	m_ShotRegulator;			// When should I shoot next?
+
+	DesiredWeaponState_t	m_iDesiredWeaponState;
+
 protected:
 	CAI_Enemies *		m_pEnemies;	// Holds information about enemies / danger positions / shared between sqaud members
 	int					m_afMemory;
@@ -1586,9 +1591,9 @@ protected:
 	bool				m_bIgnoreUnseenEnemies;
 
 private:
-	CAI_ShotRegulator	m_ShotRegulator;			// When should I shoot next?
-
-	DesiredWeaponState_t	m_iDesiredWeaponState;
+	bool				m_bHintGroupNavLimiting;
+	string_t			m_strHintGroup;
+	CAI_TacticalServices *m_pTacticalServices;
 
 public:
 	//-----------------------------------------------------
@@ -1649,11 +1654,6 @@ protected:
 	string_t			m_SquadName;
 
 	int					m_iMySquadSlot;	// this is the behaviour slot that the npc currently holds in the squad. 
-
-private:
-	string_t			m_strHintGroup;
-	bool				m_bHintGroupNavLimiting;
-	CAI_TacticalServices *m_pTacticalServices;
 
 public:
 	//-----------------------------------------------------
@@ -1765,11 +1765,11 @@ public:
 	virtual void		Event_Killed( const CTakeDamageInfo &info );
 
 	virtual Vector		GetShootEnemyDir( const Vector &shootOrigin, bool bNoisy = true );
-#ifdef HL2_DLL
 	virtual Vector		GetActualShootPosition( const Vector &shootOrigin );
 	virtual Vector		GetActualShootTrajectory( const Vector &shootOrigin );
-	virtual	Vector		GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget = NULL );
-	virtual	float		GetSpreadBias( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget );
+#ifdef HL2_DLL
+	Vector			GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget = NULL );
+	float			GetSpreadBias( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget );
 #endif //HL2_DLL
 	virtual void		CollectShotStats( const Vector &vecShootOrigin, const Vector &vecShootDir );
 	virtual Vector		BodyTarget( const Vector &posSrc, bool bNoisy = true );
@@ -1819,6 +1819,7 @@ public:
 	void InputForgetEntity( inputdata_t &inputdata );
 	void InputIgnoreDangerSounds( inputdata_t &inputdata );
 	void InputUpdateEnemyMemory( inputdata_t &inputdata );
+	void InputSetMaxLookDistance( inputdata_t &inputdata );
 
 	//---------------------------------
 	
@@ -1864,6 +1865,7 @@ public:
 	string_t			m_spawnEquipment;
 
 	bool				m_fNoDamageDecal;
+	bool				m_bDidDeathCleanup;
 
 	EHANDLE				m_hStoredPathTarget;		// For TASK_SET_GOAL
 	Vector				m_vecStoredPathGoal;		//
@@ -1872,9 +1874,6 @@ public:
 
 	CHandle<CBaseFilter>	m_hEnemyFilter;
 	string_t				m_iszEnemyFilterName;
-
-	bool					m_bDidDeathCleanup;
-
 
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_lifeState );
 
@@ -2053,7 +2052,7 @@ public:
 	// -----------------------------
 	//  Debuging Fields and Methods
 	// -----------------------------
-	const char*			m_failText;					// Text of why it failed
+	CUtlString			m_failText;					// Text of why it failed
 	const char*			m_interruptText;			// Text of why schedule interrupted
 	CAI_Schedule*		m_failedSchedule;			// The schedule that failed last
 	CAI_Schedule*		m_interuptSchedule;			// The schedule that was interrupted last

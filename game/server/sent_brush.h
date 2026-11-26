@@ -1,4 +1,5 @@
 #include "triggers.h"
+#include "gmod/scriptedentity.h"
 
 class CSENT_brush : public CBaseTrigger
 {
@@ -24,4 +25,6 @@ public:
 
 	virtual void ScriptThink();
 	virtual void doKeyValue( char const*, char const* );
+
+	CNetworkVarEmbedded( CScriptedEntity, m_ScriptedEntity );
 };

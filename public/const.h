@@ -59,7 +59,7 @@
 
 // BUGBUG: Reconcile with or derive this from the engine's internal definition!
 // FIXME: I added an extra bit because I needed to make it signed
-#define SP_MODEL_INDEX_BITS			13
+#define SP_MODEL_INDEX_BITS			14
 
 // How many bits to use to encode an edict.
 #define	MAX_EDICT_BITS				13			// # of bits needed to represent max edicts
@@ -89,7 +89,7 @@
 
 // This is the maximum amount of data a PackedEntity can have. Having a limit allows us
 // to use static arrays sometimes instead of allocating memory all over the place.
-#define MAX_PACKEDENTITY_DATA	(16384)
+#define MAX_PACKEDENTITY_DATA	(32768)
 
 // This is the maximum number of properties that can be delta'd. Must be evenly divisible by 8.
 #define MAX_PACKEDENTITY_PROPS	(4096)
@@ -120,7 +120,7 @@
 #define	FL_INWATER				(1<<9)	// In water
 
 // NOTE if you move things up, make sure to change this value
-#define PLAYER_FLAG_BITS		10
+#define PLAYER_FLAG_BITS		16
 
 #define	FL_FLY					(1<<10)	// Changes the SV_Movestep() behavior to not need to be on ground
 #define	FL_SWIM					(1<<11)	// Changes the SV_Movestep() behavior to not need to be on ground (but stay in water)
@@ -162,7 +162,7 @@
 #define	FL_INWATER				(1<<10)	// In water
 
 // NOTE if you move things up, make sure to change this value
-#define PLAYER_FLAG_BITS		11
+#define PLAYER_FLAG_BITS		16
 
 #define	FL_FLY					(1<<11)	// Changes the SV_Movestep() behavior to not need to be on ground
 #define	FL_SWIM					(1<<12)	// Changes the SV_Movestep() behavior to not need to be on ground (but stay in water)
@@ -294,7 +294,7 @@ enum
 										// the parent is not in the PVS.
 	EF_ITEM_BLINK			= 0x100,	// blink an item so that the user notices it.
 	EF_PARENT_ANIMATES		= 0x200,	// always assume that the parent entity is animating
-	EF_MAX_BITS = 10
+	EF_MAX_BITS = 16
 };
 
 #define EF_PARITY_BITS	3

@@ -4,10 +4,10 @@
 //
 //=============================================================================//
 
-#include "weapon_hl2mpbase.h"
+#include "weapon_hl2mpbasehlmpcombatweapon.h"
 
-#ifndef BASEHLCOMBATWEAPON_H
-#define BASEHLCOMBATWEAPON_H
+#ifndef WEAPON_HL2MPBASE_MACHINEGUN_H
+#define WEAPON_HL2MPBASE_MACHINEGUN_H
 #ifdef _WIN32
 #pragma once
 #endif
@@ -19,10 +19,10 @@
 //=========================================================
 // Machine gun base class
 //=========================================================
-class CHL2MPMachineGun : public CWeaponHL2MPBase
+class CHL2MPMachineGun : public CBaseHL2MPCombatWeapon
 {
 public:
-	DECLARE_CLASS( CHL2MPMachineGun, CWeaponHL2MPBase );
+	DECLARE_CLASS( CHL2MPMachineGun, CBaseHL2MPCombatWeapon );
 	DECLARE_DATADESC();
 
 	CHL2MPMachineGun();
@@ -53,7 +53,7 @@ protected:
 	// RaphaelIT7: Only 16 bits are used for networking!
 	CNetworkVar( int, m_nShotsFired );	// Number of consecutive shots fired
 
-	float	m_flNextSoundTime;	// real-time clock of when to make next sound
+	double	m_flNextSoundTime;	// real-time clock of when to make next sound
 };
 
-#endif // BASEHLCOMBATWEAPON_H
+#endif // WEAPON_HL2MPBASE_MACHINEGUN_H

@@ -456,8 +456,6 @@ protected:
 	void SetLastHitGroup( int nHitGroup )	{ m_LastHitGroup = nHitGroup; }
 
 public:
-	void* _offsetply1[13];
-
 	CNetworkVar( double, m_flNextAttack );			// cannot attack again until this time
 
 #ifdef GLOWS_ENABLE
@@ -516,6 +514,11 @@ protected:
 	// shared ammo slots
 	CNetworkArrayForDerived( int, m_iAmmo, MAX_AMMO_SLOTS );
 
+public:
+	virtual bool		RemoveClassRelationship( Class_T nClass );
+
+protected:
+
 	// Usable character items 
 	CNetworkArray( CBaseCombatWeaponHandle, m_hMyWeapons, MAX_WEAPONS );
 
@@ -540,6 +543,9 @@ protected:
 	CNavArea *m_lastNavArea;
 	CAI_MoveMonitor m_NavAreaUpdateMonitor;
 	int m_registeredNavTeam;	// ugly, but needed to clean up player team counts in nav mesh
+
+	bool m_bSuppressAmmoPickupSound;
+	bool m_bNoAmmoOnWeaponEquip;
 };
 
 

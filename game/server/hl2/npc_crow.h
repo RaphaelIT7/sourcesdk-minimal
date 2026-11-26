@@ -6,6 +6,8 @@
 
 #ifndef NPC_CROW_H
 #define NPC_CROW_H
+
+#include "ai_basenpc.h"
 #ifdef _WIN32
 #pragma once
 #endif

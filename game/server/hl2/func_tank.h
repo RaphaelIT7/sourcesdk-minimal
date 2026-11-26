@@ -228,7 +228,7 @@ protected:
 	virtual void TankActivate(void);
 	virtual void TankDeactivate(void);
 
-	float					m_fireLast;		// Last time I fired
+	double					m_fireLast;		// Last time I fired
 	float					m_fireRate;		// How many rounds/second
 
 	EHANDLE					m_hTarget;
@@ -237,14 +237,11 @@ protected:
 	int						m_iBulletDamage; // 0 means use Bullet type's default damage
 	int						m_iBulletDamageVsPlayer; // Damage vs player. 0 means use m_iBulletDamage
 
-#ifdef HL2_EPISODIC
-	string_t				m_iszAmmoType;		// The name of the ammodef that we use when we fire. Bullet damage still comes from keyvalues.
-	int						m_iAmmoType;		// The cached index of the ammodef that we use when we fire.
-#else
 	int						m_iSmallAmmoType;
 	int						m_iMediumAmmoType;
 	int						m_iLargeAmmoType;
-#endif // HL2_EPISODIC
+	string_t				m_iszAmmoType;		// The name of the ammodef that we use when we fire. Bullet damage still comes from keyvalues.
+	int						m_iAmmoType;		// The cached index of the ammodef that we use when we fire.
 
 	int						m_spread;		// firing spread
 
@@ -278,7 +275,7 @@ private:
 	float					m_pitchTolerance;	// Tolerance angle
 
 	float					m_fireTime;		// How much time has been used to fire the weapon so far.
-	float					m_lastSightTime;// Last time I saw target
+	double					m_lastSightTime;// Last time I saw target
 	float					m_persist;		// Persistence of firing (how long do I shoot when I can't see)
 	float					m_persist2;		// Secondary persistence of firing (randomly shooting when I can't see)
 	float					m_persist2burst;// How long secondary persistence burst lasts

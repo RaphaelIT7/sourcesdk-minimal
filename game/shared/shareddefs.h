@@ -245,7 +245,7 @@ enum CastVote
 // The first team that's game specific (i.e. not unassigned / spectator)
 #define FIRST_GAME_TEAM			(LAST_SHARED_TEAM+1)
 
-#define MAX_TEAMS				32	// Max number of teams in a game
+#define MAX_TEAMS				128	// Max number of teams in a game
 #define MAX_TEAM_NAME_LENGTH	32	// Max length of a team's name
 
 // Weapon m_iState

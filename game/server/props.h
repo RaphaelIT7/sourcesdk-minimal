@@ -15,6 +15,7 @@
 #include "physics_bone_follower.h"
 #include "player_pickup.h"
 #include "positionwatcher.h"
+#include "nav_mesh.h"
 
 //=============================================================================================================
 // PROP TYPES
@@ -288,12 +289,14 @@ public:
 
 	// Input handlers
 	void InputSetAnimation( inputdata_t &inputdata );
+	void InputSetAnimationNoReset( inputdata_t &inputdata );
 	void InputSetDefaultAnimation( inputdata_t &inputdata );
 	void InputTurnOn( inputdata_t &inputdata );
 	void InputTurnOff( inputdata_t &inputdata );
 	void InputDisableCollision( inputdata_t &inputdata );
 	void InputEnableCollision( inputdata_t &inputdata );
 	void InputSetPlaybackRate( inputdata_t &inputdata );
+	void InputFadeAndKill( inputdata_t &inputdata );
 
 	COutputEvent		m_pOutputAnimBegun;
 	COutputEvent		m_pOutputAnimOver;
@@ -302,6 +305,9 @@ public:
 
 	int					m_iGoalSequence;
 	int					m_iTransitionDirection;
+
+	bool				m_bAnimationDone;
+	bool				m_bHoldAnimation;
 
 	// Random animations
 	bool				m_bRandomAnimator;
@@ -312,6 +318,7 @@ public:
 
 	bool				m_bStartDisabled;
 	bool				m_bDisableBoneFollowers;
+	bool				m_bAnimateEveryFrame;
 
 	CNetworkVar( bool, m_bUseHitboxesForRenderBox );
 
@@ -327,8 +334,7 @@ protected:
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-DECLARE_AUTO_LIST( IPhysicsPropAutoList );
-class CPhysicsProp : public CBreakableProp, public IPhysicsPropAutoList
+class CPhysicsProp : public CBreakableProp, public INavAvoidanceObstacle
 {
 	DECLARE_CLASS( CPhysicsProp, CBreakableProp );
 	DECLARE_SERVERCLASS();
@@ -368,6 +374,7 @@ public:
 	float GetMass() const;
 
 	void ClearFlagsThink( void );
+	void NavThink( void );
 
 	virtual int OnTakeDamage( const CTakeDamageInfo &info );
 	int DrawDebugTextOverlays(void);
@@ -379,6 +386,12 @@ public:
 
 	string_t GetPhysOverrideScript( void ) { return m_iszOverrideScript; }
 	float	GetMassScale( void ) { return m_massScale; }
+
+	virtual bool IsPotentiallyAbleToObstructNavAreas( void ) const;
+	virtual float GetNavObstructionHeight( void ) const;
+	virtual bool CanObstructNavAreas( void ) const;
+	virtual CBaseEntity *GetObstructingEntity( void );
+	virtual void OnNavMeshLoaded( void );
 
 private:
 	// Compute impulse to apply to the enabled entity.

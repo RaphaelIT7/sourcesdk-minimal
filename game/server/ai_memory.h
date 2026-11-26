@@ -34,7 +34,7 @@ struct AI_EnemyInfo_t
 
 	Vector			vLastKnownLocation;
 	Vector			vLastSeenLocation;
-	float			timeLastSeen;		// Last time enemy was seen
+	double			timeLastSeen;		// Last time enemy was seen
 	float			timeFirstSeen;		// First time enemy was seen
 	float			timeLastReacquired;	
 	float			timeValidEnemy;		// First time can be selected (reaction delay)

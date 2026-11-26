@@ -224,7 +224,6 @@ protected:
 	float			m_torqueLimit;
 
 	CUtlVector< magnetted_objects_t >	m_MagnettedEntities;
-	IPhysicsConstraintGroup				*m_pConstraintGroup;
 
 	bool			m_bActive;
 	bool			m_bHasHitSomething;

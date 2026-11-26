@@ -31,12 +31,14 @@
 class CTakeDamageInfo;
 
 #if !defined( CLIENT_DLL )
-class CBaseGrenade : public CBaseProjectile, public CDefaultPlayerPickupVPhysics
+class CBaseGrenade : public CBaseAnimating, public CDefaultPlayerPickupVPhysics
+{
+	DECLARE_CLASS( CBaseGrenade, CBaseAnimating );
 #else
 class CBaseGrenade : public CBaseProjectile
-#endif
 {
 	DECLARE_CLASS( CBaseGrenade, CBaseProjectile );
+#endif
 public:
 
 	CBaseGrenade(void);
@@ -114,7 +116,6 @@ public:
 #endif
 
 public:
-	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_vecVelocity );
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_fFlags );
 	
 	bool				m_bHasWarnedAI;				// whether or not this grenade has issued its DANGER sound to the world sound list yet.
@@ -128,6 +129,7 @@ protected:
 
 	CNetworkVar( float, m_flDamage );		// Damage to inflict.
 	string_t m_iszBounceSound;	// The sound to make on bouncing.  If not NULL, overrides the BounceSound() function.
+	EHANDLE m_hWeapon;
 
 private:
 	CNetworkHandle( CBaseEntity, m_hThrower );					// Who threw this grenade

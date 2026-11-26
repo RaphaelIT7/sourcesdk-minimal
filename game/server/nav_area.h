@@ -121,7 +121,7 @@ typedef CUtlVectorUltraConservative<NavLadderConnect, CNavVectorAllocator> NavLa
 class HidingSpot
 {
 public:
-	virtual ~HidingSpot()	{ }
+	~HidingSpot()	{ }
 
 	enum 
 	{ 
@@ -733,9 +733,7 @@ private:
 
 	void CalcDebugID();
 
-#ifdef NEXT_BOT
 	CUtlVector< CHandle< CFuncNavPrerequisite > > m_prerequisiteVector;		// list of prerequisites that must be met before this area can be traversed
-#endif
 
 	CNavArea *m_prevHash, *m_nextHash;							// for hash table in CNavMesh
 
@@ -765,6 +763,10 @@ private:
 	static uint32 s_nCurrVisTestCounter;
 
 	CUtlVector< CHandle< CFuncNavCost > > m_funcNavCostVector;	// active, overlapping cost entities
+
+	void *m_luaUserData;
+	GarrysMod::Lua::CLuaObject *m_luaObject;
+	bool m_isRemovedFromLists;
 };
 
 typedef CUtlVector< CNavArea * > NavAreaVector;

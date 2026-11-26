@@ -573,6 +573,7 @@ public:
 		unsigned int rejectionMessageLen ) = 0;
 	virtual void GMOD_ClientSignOnStateChanged( int userID, int oldState, int newState ) = 0;
 	virtual void GMOD_OnAllSoundsStoppedSV() = 0;
+	virtual void GMOD_OnStringTablesRemoved() = 0;
 };
 
 typedef IServerGameDLL IServerGameDLL008;

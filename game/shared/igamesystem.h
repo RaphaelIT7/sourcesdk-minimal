@@ -214,6 +214,8 @@ public:
 	virtual void FrameUpdatePostEntityThink() { }
 	virtual void PreClientUpdate() { }
 #endif
+
+	virtual bool IsInCallback() { return false; }
 };
 
 // Quick and dirty server system for users who don't care about precise ordering

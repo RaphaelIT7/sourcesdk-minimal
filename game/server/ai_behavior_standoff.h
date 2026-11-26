@@ -185,7 +185,7 @@ private:
 	CAI_MoveMonitor m_PlayerMoveMonitor;
 	
 	CSimTimer		m_TimeForceCoverHint;
-	CSimTimer		m_TimePreventForceNewEnemy;
+	CRandSimTimer	m_TimePreventForceNewEnemy;
 	CRandSimTimer	m_RandomCoverChangeTimer;
 
 	// FIXME: TEMPORARY! REMOVE

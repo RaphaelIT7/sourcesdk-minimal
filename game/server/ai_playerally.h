@@ -437,7 +437,7 @@ private:
 	
 	AI_Response		m_PendingResponse;
 	std::string		m_PendingConcept;
-	float			m_TimePendingSet;
+	double			m_TimePendingSet;
 
 	//---------------------------------
 	

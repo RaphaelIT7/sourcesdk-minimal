@@ -12,6 +12,7 @@
 
 #include "playernet_vars.h"
 #include "igamesystem.h"
+#include "GameEventListener.h"
 
 // Spawn Flags
 #define SF_FOG_MASTER		0x0001
@@ -53,6 +54,10 @@ public:
 	void InputSetEndDistLerpTo(inputdata_t &data);
 
 	void InputStartFogTransition(inputdata_t &data);
+	void InputSetColorHDR( inputdata_t &inputdata );
+	void InputSetColorSecondaryHDR( inputdata_t &inputdata );
+	void InputSetRadial( inputdata_t &inputdata );
+	void InputSetMaxDensityLerpTo( inputdata_t &inputdata );
 
 	int DrawDebugTextOverlays(void);
 
@@ -72,28 +77,29 @@ public:
 //
 // Fog Controller System.
 //
-class CFogSystem : public CAutoGameSystem
+class CFogSystem : public CAutoGameSystem, public CGameEventListener
 {
 public:
 
 	// Creation/Init.
 	CFogSystem( char const *name ) : CAutoGameSystem( name ) 
 	{
-		m_pMasterController = NULL;
+		m_hMasterController = NULL;
 	}
 
 	~CFogSystem()
 	{
-		m_pMasterController = NULL;
+		m_hMasterController = NULL;
 	}
 
 	virtual void LevelInitPreEntity();
 	virtual void LevelInitPostEntity();
-	CFogController *GetMasterFogController( void )			{ return m_pMasterController; }
+	virtual void FireGameEvent( IGameEvent *event );
+	CFogController *GetMasterFogController( void )			{ return m_hMasterController.Get(); }
 
 private:
 
-	CFogController	*m_pMasterController;
+	CHandle<CFogController>	m_hMasterController;
 };
 
 CFogSystem *FogSystem( void );

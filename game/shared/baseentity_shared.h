@@ -63,7 +63,7 @@ enum InvalidatePhysicsBits_t
 #include "baseentity.h"
 
 #ifdef HL2_EPISODIC
-	#include "info_darknessmode_lightsource.h"
+	#include "hl2/info_darknessmode_lightsource.h"
 #endif // HL2_EPISODIC
 
 #endif

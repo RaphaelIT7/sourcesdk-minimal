@@ -209,8 +209,6 @@ public:
 	virtual void		GetAutoaimVector( autoaim_params_t &params );
 	bool				ShouldKeepLockedAutoaimTarget( EHANDLE hLockedTarget );
 
-	void				SetLocatorTargetEntity( CBaseEntity *pEntity ) { m_hLocatorTargetEntity.Set( pEntity ); }
-
 	virtual int			GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound);
 	virtual bool		BumpWeapon( CBaseCombatWeapon *pWeapon );
 	
@@ -307,7 +305,7 @@ private:
 
 	float				m_flTimeAllSuitDevicesOff;
 
-	bool				m_bSprintEnabled;		// Used to disable sprint temporarily
+	CNetworkVarForDerived( bool, m_bSprintEnabled );		// Used to disable sprint temporarily
 	bool				m_bIsAutoSprinting;		// A proxy for holding down the sprint key.
 	float				m_fAutoSprintMinTime;	// Minimum time to maintain autosprint regardless of player speed. 
 
@@ -324,12 +322,6 @@ private:
 	float				m_RealTimeLastSquadCommand;
 	CommanderCommand_t	m_QueuedCommand;
 
-	Vector				m_vecMissPositions[16];
-	int					m_nNumMissPositions;
-
-	float				m_flTimeIgnoreFallDamage;
-	bool				m_bIgnoreFallDamageResetAfterImpact;
-
 	// Suit power fields
 	float				m_flSuitPowerLoad;	// net suit power drain (total of all device's drainrates)
 	float				m_flAdmireGlovesAnimTime;
@@ -345,6 +337,9 @@ private:
 
 	EHANDLE				m_hPlayerProxy;
 
+	float				m_flTimeIgnoreFallDamage;
+	bool				m_bIgnoreFallDamageResetAfterImpact;
+
 	bool				m_bFlashlightDisabled;
 	bool				m_bUseCappedPhysicsDamageTable;
 	
@@ -354,14 +349,7 @@ private:
 	float				m_flTimeUseSuspended;
 
 	CSimpleSimTimer		m_LowerWeaponTimer;
-	CSimpleSimTimer		m_AutoaimTimer;
 
-	EHANDLE				m_hLockedAutoAimEntity;
-
-	EHANDLE				m_hLocatorTargetEntity; // The entity that's being tracked by the suit locator.
-
-	float				m_flTimeNextLadderHint;	// Next time we're eligible to display a HUD hint about a ladder.
-	
 	friend class CHL2GameMovement;
 };
 
